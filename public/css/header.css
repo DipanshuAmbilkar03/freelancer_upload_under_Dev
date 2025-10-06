@@ -1,0 +1,72 @@
+/* Navbar */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #afafb6;
+  padding: 1rem 2rem;
+  color: #fff;
+}
+
+.logo h1 {
+  font-size: 1.5rem;
+}
+
+.nav-buttons .btn {
+  margin-left: 1rem;
+  background: #c1c1c1;
+  padding: 0.5rem 1rem;
+  border-radius: 0.3rem;
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.nav-buttons .btn:hover {
+  background: #0056b3;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 250px;
+  height: 100vh;
+  background: #2c2c3a;
+  padding-top: 3rem;
+  transition: left 0.3s ease;
+}
+
+.sidebar a {
+  display: block;
+  padding: 1rem 1.5rem;
+  color: #ddd;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.sidebar a:hover {
+  background: #444;
+  color: #fff;
+}
+
+/* Menu Toggle */
+.menu-toggle {
+  display: none;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-buttons {
+    display: none;
+  }
+  .menu-toggle {
+    display: block;
+  }
+}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Assignments - Freelancer Bidding Site</title>
+  <link rel="stylesheet" href="/css/assignments.css">
+  <script src="/js/dashboard.js" defer></script>
+</head>
+<body>
+
+    <!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <h2>Freelance</h2>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/assignments">Assignments</a>
+    <a href="/projects">Projects</a>
+    <a href="/bids">My Bids</a>
+    <a href="/profile">Profile</a>
+  </nav>
+</aside>
+
+<!-- Toggle button stays outside -->
+<button class="toggle-btn" id="toggleBtn">☰</button>
+
+    <!-- Main Content -->
+    <div class="main">
+        <div class="top-bar">
+        <h1>Assignments</h1>
+        <div class="user-actions">
+            <a href="/dashboard">Profile</a>
+            <a href="/logout">Logout</a>
+        </div>
+        </div>
+
+        <h2>Available Assignments</h2>
+        <div class="grid">
+        <% if (!assignments || assignments.length === 0) { %>
+            <p>No assignments available.</p>
+        <% } else { %>
+            <% assignments.forEach(a => { %>
+            <div class="card">
+                <img class="card-img" src="<%= a.image && a.image.length ? a.image : 'https://via.placeholder.com/600x360' %>" alt="assignment image">
+                <div class="card-body">
+                <h3 class="card-title">
+                    <a href="/assignments/<%= a._id %>"><%= a.title %></a>
+                </h3>
+                <p class="card-desc">
+                    <%= a.description ? (a.description.length > 150 ? a.description.slice(0,150) + '...' : a.description) : '' %>
+                </p>
+                <div class="meta">
+                    <strong>Subject:</strong> <%= a.subject || 'N/A' %> | 
+                    <strong>Category:</strong> <%= a.category || 'N/A' %> | 
+                    <strong>Price:</strong> Rs.<%= a.startingPrice || 0 %>
+                </div>
+                <div class="footer">
+                    <small>Posted by: <%= a.postedBy && a.postedBy.username ? a.postedBy.username : 'Unknown' %></small>
+                    <% if (currentUserId) { %>
+                    <form action="/api/assignments/<%= a._id %>/bid" method="POST">
+                        <input type="number" name="bidAmount" placeholder="Enter your bid" min="1" required>
+                        <button type="submit">Bid</button>
+                    </form>
+                    <% } %>
+                </div>
+                </div>
+            </div>
+            <% }) %>
+        <% } %>
+        </div>
+
+        <footer>
+        <p>&copy; 2025 Freelancer Bidding Site. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggleBtn');
+
+        toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Freelancer Bidding Site</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/header.css">
+  <script src="/js/home.js" defer></script>
+</head>
+<body>
+  <header>
+    <!-- Top Navbar -->
+    <div class="top-nav">
+      <div class="logo">
+        <a href="/"><h1>Freelance</h1></a>
+      </div>
+
+      <div class="nav-buttons">
+        <% if (currentUser) { %>
+          <a href="/assignments" class="btn">Dashboard</a>
+          <a href="/logout" class="btn">Logout</a>
+        <% } else { %>
+          <a href="/login" class="btn">Login</a>
+          <a href="/register" class="btn btn-primary">Register</a>
+        <% } %>
+      </div>
+
+      <!-- Sidebar Toggle (hamburger button) -->
+      <!-- <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu">
+        ☰
+      </button> -->
+    </div>
+
+    <!-- Sidebar -->
+    <!-- <nav id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <h2>Menu</h2>
+        <button class="close-btn" id="closeSidebar" aria-label="Close Menu">×</button>
+      </div>
+      <ul>
+        <li><a href="/">🏠 Home</a></li>
+        <li><a href="/assignments">📋 Dashboard</a></li>
+        <li><a href="/projects">💼 Projects</a></li>
+        <li><a href="/bids">💰 My Bids</a></li>
+        <li><a href="/profile">👤 Profile</a></li>
+      </ul>
+    </nav> -->
+  </header>
+
+  <!-- 
+    <main class="content">
+      <div class="animation-container">
+
+      </div>
+    </main> 
+  -->
+
+    
+</body>
+</html>

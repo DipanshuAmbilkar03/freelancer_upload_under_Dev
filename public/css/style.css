@@ -1,0 +1,292 @@
+/* Reset & Global Styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f6fa;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 600;
+  margin: 0;
+}
+
+h1 {
+  font-size: 2.5rem;
+  text-align: center;
+  padding: 20px 0;
+}
+
+h2 {
+  font-size: 28px;
+  text-align: center;
+  margin: 30px 0 20px;
+  color: #222;
+}
+
+h3 {
+  font-size: 22px;
+  margin: 25px 0 15px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 12px;
+  color: #444;
+}
+
+/* Buttons */
+.btn, button {
+  display: inline-block;
+  background: #007bff;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn:hover, button:hover {
+  background: #0056b3;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+/* Layout */
+.page-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  background: #f8f9fa;
+  padding-top: 3rem;
+  position: fixed;
+  top: 0;
+  left: -250px;
+  height: 100vh;
+  transition: left 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar.sidebar-open {
+  left: 0;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin: 1rem 0;
+}
+
+.sidebar ul li a {
+  color: #333;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  display: block;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.sidebar ul li a:hover {
+  background: #e0e0e0;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar.sidebar-open + .main-content {
+  margin-left: 220px;
+}
+
+.content {
+  flex: 1;
+  padding: 2rem;
+}
+
+/* User Avatar Info */
+.user-avatar-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.user-avatar:hover {
+  background-color: #0056b3;
+}
+
+.avatar-info {
+  display: none;
+  position: absolute;
+  top: 55px;
+  right: 0;
+  background: #fff;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 14px;
+  width: 220px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  border-radius: 8px;
+  z-index: 100;
+}
+
+.user-avatar-wrapper:hover .avatar-info {
+  display: block;
+}
+
+.avatar-info a {
+  display: block;
+  color: #007bff;
+  text-decoration: none;
+  padding: 8px 0;
+  font-size: 15px;
+}
+
+.avatar-info a:hover {
+  text-decoration: underline;
+}
+
+/* Profile Layout */
+.profile-layout {
+  display: flex;
+  gap: 40px;
+  margin: 30px 20px;
+  flex-wrap: wrap;
+}
+
+.column {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  flex: 1;
+  min-width: 320px;
+}
+
+.column-info { flex: 2; }
+.column-posts { flex: 1.5; }
+.column-suggestions { flex: 1; }
+
+.column h2 {
+  font-size: 26px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 15px;
+  margin-bottom: 25px;
+  color: #444;
+}
+
+.column ul {
+  list-style-type: disc;
+  padding-left: 24px;
+}
+
+.column ul li {
+  margin-bottom: 12px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Assignment Info Card */
+.assignment-info-card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  max-width: 800px;
+  margin: 30px auto;
+}
+
+.assignment-info-card h3 {
+  font-size: 28px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 18px;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.assignment-item {
+  margin-bottom: 25px;
+  padding: 20px;
+  border-left: 6px solid #007bff;
+  background: #fafafa;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+
+.assignment-item:hover {
+  background: #f1f8ff;
+}
+
+.assignment-item h4 {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.assignment-item h4 a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.assignment-item h4 a:hover {
+  text-decoration: underline;
+}
+
+.assignment-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  font-size: 16px;
+  color: #555;
+}
+
+.status {
+  padding: 8px 16px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.status.open {
+  background: #e6f4ea;
+  color: #155724;
+}
+
+.status.closed {
+  background: #fdecea;
+  color: #721c24;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 900px) {
+  .profile-layout {
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .column {
+    min-width: 100%;
+  }
+}

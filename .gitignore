@@ -1,0 +1,10 @@
+.env
+.env.example
+.vscode
+node_modules
+package.json
+package-lock.json
+# dipanshu_credentials
+# mongoDBAtlasKeyPass
+description.txt
+backup

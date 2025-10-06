@@ -1,0 +1,140 @@
+.profile-layout {
+  display: flex;
+  gap: 30px;
+  margin: 30px 20px;
+  flex-wrap: wrap;
+}
+
+.column {
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  flex: 1;
+  min-width: 300px;
+}
+
+.column-info {
+  flex: 2;
+}
+
+.column-posts {
+  flex: 1.5;
+}
+
+.column-suggestions {
+  flex: 1;
+}
+
+.column h2 {
+  font-size: 24px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  color: #444;
+}
+
+.column ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.column ul li {
+  margin-bottom: 10px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.btn {
+  display: inline-block;
+  background: #007bff;
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:hover {
+  background: #0056b3;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Responsive Layout */
+@media (max-width: 900px) {
+  .profile-layout {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .column {
+    width: 100%;
+  }
+}
+
+.assignment-info-card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+.assignment-info-card h3 {
+  font-size: 26px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.assignment-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-left: 4px solid #007bff;
+  background: #fafafa;
+  border-radius: 6px;
+}
+
+.assignment-item h4 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.assignment-item h4 a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.assignment-item h4 a:hover {
+  text-decoration: underline;
+}
+
+.assignment-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  font-size: 16px;
+  color: #555;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.status.open {
+  background: #e6f4ea;
+  color: #155724;
+}
+
+.status.closed {
+  background: #fdecea;
+  color: #721c24;
+}

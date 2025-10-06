@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= assignment.title %> - Assignment Detail</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      font-size: 28px;
+      margin-bottom: 15px;
+      color: #222;
+    }
+
+    .assignment-image {
+      width: 100%;
+      max-height: 350px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 8px 0;
+    }
+
+    strong {
+      color: #111;
+    }
+
+    /* Bid Section */
+    form {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f1f3f6;
+      border-radius: 8px;
+    }
+
+    form input, form textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    form button {
+      background: #007bff;
+      color: #fff;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+    }
+
+    form button:hover {
+      background: #0056b3;
+    }
+
+    /* Bids List */
+    h3 {
+      margin-top: 25px;
+      font-size: 22px;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 6px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul li {
+      background: #f9f9f9;
+      margin: 10px 0;
+      padding: 12px 15px;
+      border-radius: 8px;
+      border: 1px solid #e3e3e3;
+    }
+
+    ul li strong {
+      color: #007bff;
+    }
+
+    /* Status badge */
+    .status {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 14px;
+      margin-left: 8px;
+    }
+
+    .status.open { background: #d4edda; color: #155724; }
+    .status.closed { background: #f8d7da; color: #721c24; }
+
+  </style>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <div class="container">
+    <h2>
+      <%= assignment.title %>
+      <span class="status <%= assignment.status.toLowerCase() %>">
+        <%= assignment.status %>
+      </span>
+    </h2>
+
+    <img src="<%= assignment.image || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80' %>"
+         alt="Assignment Image"
+         class="assignment-image">
+
+    <p><strong>Description:</strong> <%= assignment.description %></p>
+    <p><strong>Starting Price:</strong> Rs.<%= assignment.startingPrice %></p>
+    <p><strong>Subject:</strong> <%= assignment.subject || 'N/A' %></p>
+    <p><strong>Category:</strong> <%= assignment.category || 'N/A' %></p>
+    <p><strong>Deadline:</strong> <%= assignment.deadline ? assignment.deadline.toLocaleDateString() : 'N/A' %></p>
+    <p><strong>Posted By:</strong> <%= assignment.postedBy.username %></p>
+
+    <% if (user) { %>
+      <h3>Place a Bid</h3>
+      <form action="/api/assignments/<%= assignment._id %>/bid" method="POST">
+        <input type="number" name="bidAmount" placeholder="Enter your bid amount" required min="1">
+        <textarea name="message" placeholder="Optional message"></textarea>
+        <button type="submit">Submit Bid</button>
+      </form>
+    <% } else { %>
+      <p>Please <a href="/login">login</a> to place a bid.</p>
+    <% } %>
+
+    <h3>Bids</h3>
+    <ul>
+      <% assignment.bids.forEach(bid => { %>
+        <li>
+          <strong><%= bid.bidder.username %></strong>: Rs.<%= bid.bidAmount %>  
+          <br>
+          <em><%= bid.message || 'No message' %></em>
+        </li>
+      <% }) %>
+    </ul>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

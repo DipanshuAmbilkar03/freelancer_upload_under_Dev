@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/newheader.css">
+  <link rel="stylesheet" href="/css/profile.css">
+  <style>
+    .pdf-viewer {
+      margin-top: 15px;
+    }
+    .pdf-viewer iframe {
+      width: 100%;
+      height: 500px;
+      border: 1px solid #ccc;
+    }
+    .pdf-list {
+      margin-top: 10px;
+    }
+    .pdf-list a {
+      display: block;
+      margin: 5px 0;
+      color: #007bff;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-wrapper">
+
+    <aside class="sidebar" id="sidebar">
+      <ul>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/assignments">Assignments</a></li>
+        <li><a href="/saved">Saved Documents</a></li>
+        <li><a href="/profile">Profile</a></li>
+      </ul>
+    </aside>
+
+    <div class="main-content">
+
+      <header class="custom-header">
+        <div class="header-left">
+          <button class="menu-toggle" id="menuToggle">☰</button>
+          <h1 class="logo">FREELANCE</h1>
+        </div>
+
+        <div class="header-right">
+          <a href="/upload" class="btn">Upload</a>
+          <a href="/saved" class="btn">Saved</a>
+          <a href="/post-assignment" class="btn btn-new-assignment">+ Post New</a>
+
+          <div class="user-avatar-wrapper">
+            <div class="user-avatar"><%= user.username[0].toUpperCase() %></div>
+            <div class="avatar-info">
+              <p><strong>Username:</strong> <%= user.username %></p>
+              <p><a href="/profile">View Account</a></p>
+              <p><a href="/logout">Sign Out</a></p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content profile-layout">
+        <div class="assignment-info-card">
+          <h3>Assignment Info</h3>
+
+          <% assignments.forEach(assignment => { %>
+            <div class="assignment-item">
+              <h4><a href="/assignments/<%= assignment._id %>"><%= assignment.title %></a></h4>
+              <div class="assignment-details">
+                <span>Status: <span class="status <%= assignment.status.toLowerCase() %>"><%= assignment.status %></span></span>
+                <span>Starting Price: <strong>Rs. <%= assignment.startingPrice %></strong></span>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+
+        <section class="column column-posts">
+          <h2>Post New Assignment</h2>
+          <h3>My Posts</h3>
+          <% if (assignments.length === 0) { %>
+            <p>No posts yet.</p>
+          <% } else { %>
+            <div class="pdf-viewer">
+              <% 
+                // Find first PDF assignment
+                let firstPdf = assignments.find(a => a.image && a.image.mimetype && a.image.mimetype === 'application/pdf');
+              %>
+              <% if (firstPdf) { %>
+                <iframe id="pdfFrame" src="<%= firstPdf.image.path %>" frameborder="0"></iframe>
+              <% } else { %>
+                <p>No PDFs uploaded yet.</p>
+              <% } %>
+            </div>
+
+            <div class="pdf-list">
+              <% assignments.forEach(assignment => { %>
+                <% if (assignment.image && assignment.image.mimetype === 'application/pdf') { %>
+                  <a onclick="showPdf('<%= assignment.image.path %>')"><%= assignment.title %></a>
+                <% } %>
+              <% }) %>
+            </div>
+          <% } %>
+        </section>
+
+        <section class="column column-suggestions">
+          <h2>Suggestions</h2>
+          <p>Try improving your assignment descriptions to attract more freelancers.</p>
+        </section>
+      </main>
+
+      <%- include('partials/footer') %>
+
+    </div>
+
+  </div>
+
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('sidebar-open');
+    }); 
+
+    function showPdf(path) {
+      document.getElementById("pdfFrame").src = path;
+    }
+  </script>
+
+</body>
+
+</html>

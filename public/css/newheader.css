@@ -1,0 +1,273 @@
+/* Reset & Global Styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #ffffff;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+h2 {
+  font-size: 28px;
+  text-align: center;
+  margin: 30px 0 20px;
+  color: #222;
+}
+
+h3 {
+  font-size: 22px;
+  margin: 25px 0 15px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+/* Layout */
+.page-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  background: #f8f9fa;
+  padding-top: 3rem;
+  position: fixed;
+  top: 0;
+  left: -250px;
+  height: 100vh;
+  transition: left 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar.sidebar-open {
+  left: 0;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin: 1rem 0;
+}
+
+.sidebar ul li a {
+  color: #333;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  display: block;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.sidebar ul li a:hover {
+  background: #e0e0e0;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar.sidebar-open + .main-content {
+  margin-left: 220px;
+}
+
+.content {
+  flex: 1;
+  padding: 2rem;
+}
+
+/* Header */
+.custom-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.menu-toggle {
+  font-size: 1.5rem;
+  background: none;
+  color: #333;
+  border: none;
+  cursor: pointer;
+  margin-right: 1rem;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.header-right .btn {
+  margin-left: 1rem;
+  padding: 0.5rem 1rem;
+  background: #f8f9fa;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.header-right .btn:hover {
+  background: #eaeaea;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  background: #007bff;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  line-height: 36px;
+  border-radius: 50%;
+  margin-left: 1rem;
+  cursor: pointer;
+}
+
+/* Assignments List */
+.assignments-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.assignment-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.assignment-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+.assignment-card h4 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.assignment-card a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.assignment-card a:hover {
+  text-decoration: underline;
+}
+
+.assignment-card p {
+  font-size: 15px;
+  margin: 5px 0;
+}
+
+.status {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.status.open {
+  background: #e6f4ea;
+  color: #155724;
+}
+
+.status.closed {
+  background: #fdecea;
+  color: #721c24;
+}
+
+/* Bidding Forms */
+.bidding-section form input,
+.bidding-section form textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+.bidding-section form button {
+  display: block;
+  width: 100%;
+  background: #28a745;
+  color: #fff;
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.2s ease;
+}
+
+.bidding-section form button:hover {
+  background: #218838;
+}
+
+/* New Assignment Button */
+.add-assignment .btn {
+  display: inline-block;
+  background: #f8f9fa;
+  color: #333;
+  padding: 14px 24px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.add-assignment .btn:hover {
+  background: #eaeaea;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Footer */
+footer {
+  background: #ffffff;
+  padding: 1rem 2rem;
+  text-align: center;
+  border-top: 1px solid #ddd;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 900px) {
+  .profile-layout {
+    flex-direction: column;
+  }
+
+  .column {
+    margin-bottom: 20px;
+  }
+}
