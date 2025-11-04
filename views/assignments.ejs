@@ -7,32 +7,38 @@
   <script src="/js/dashboard.js" defer></script>
 </head>
 <body>
-
-    <!-- Sidebar -->
-<aside class="sidebar" id="sidebar">
-  <h2>Freelance</h2>
-  <nav>
-    <a href="/">Home</a>
-    <a href="/assignments">Assignments</a>
-    <a href="/projects">Projects</a>
-    <a href="/bids">My Bids</a>
-    <a href="/profile">Profile</a>
-  </nav>
-</aside>
-
-<!-- Toggle button stays outside -->
-<button class="toggle-btn" id="toggleBtn">☰</button>
-
-    <!-- Main Content -->
-    <div class="main">
+    <header class="header">
+        <div class="logo" id="logo">
+            <span class="logo-circle">F</span>
+            <span class="logo-text">freelancer</span>
+        </div>
         <div class="top-bar">
-        <h1>Assignments</h1>
-        <div class="user-actions">
-            <a href="/dashboard">Profile</a>
-            <a href="/logout">Logout</a>
+            <div class="user-actions">
+                <button class="toggle-btn" id="toggleBtn">☰</button>
+                <a href="/dashboard">Profile</a>
+                <a href="/logout">Logout</a>
+                
+            </div>
         </div>
-        </div>
+    </header>
 
+        <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <nav>
+            <a href="/">Home</a>
+            <a href="/assignments">Assignments</a>
+            <a href="/projects">Projects</a>
+            <a href="/bids">My Bids</a>
+            <a href="/profile">Profile</a>
+        </nav>
+        <nav>
+            <a href="/dashboard">Profile</a>
+        </nav>
+    </aside>
+
+        <!-- Main -->
+    <div class="main">
+        <h1>Assignments</h1>
         <h2>Available Assignments</h2>
         <div class="grid">
         <% if (!assignments || assignments.length === 0) { %>
@@ -76,11 +82,12 @@
     <script>
         const sidebar = document.getElementById('sidebar');
         const toggleBtn = document.getElementById('toggleBtn');
+        const header = document.querySelector('.header');
 
         toggleBtn.addEventListener('click', () => {
         sidebar.classList.toggle('collapsed');
+        header.classList.toggle('collapsed');
         });
     </script>
-
 </body>
 </html>
