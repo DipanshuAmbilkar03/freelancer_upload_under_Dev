@@ -1,109 +1,4 @@
-* {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
-    }
-
-    body {
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, hsla(277, 25%, 33%, 0.962), #fefedf);
-    }
-
-    .login {
-      background: #fff;
-      padding: 45px 55px;
-      border-radius: 18px;
-      box-shadow: 0 10px 30px rgba(155, 137, 179, 0.3);
-      text-align: center;
-      width: 340px;
-      animation: fadeIn 1s ease;
-    }
-
-    h2 {
-      margin-bottom: 25px;
-      color: #845ec2;
-      font-weight: 600;
-      font-size: 1.6rem;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    input {
-      padding: 12px;
-      border: 1px solid #d6d1e0;
-      border-radius: 10px;
-      font-size: 14px;
-      background-color: #fcf8ff;
-      transition: 0.3s;
-    }
-
-    input:focus {
-      border-color: #845ec2;
-      outline: none;
-      box-shadow: 0 0 8px rgba(132, 94, 194, 0.4);
-    }
-
-    button {
-      background: #845ec2;
-      color: #fff;
-      border: none;
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background: #9b89b3;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(132, 94, 194, 0.4);
-    }
-
-    a {
-      display: block;
-      margin-top: 18px;
-      color: #845ec2;
-      font-size: 14px;
-      text-decoration: none;
-      transition: 0.3s;
-    }
-
-    a:hover {
-      text-decoration: underline;
-      color: #9b89b3;
-    }
-
-    .animation {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      background: radial-gradient(circle at 20% 20%, rgba(132, 94, 194, 0.15), transparent 40%),
-                  radial-gradient(circle at 80% 80%, rgba(155, 137, 179, 0.1), transparent 40%);
-      z-index: -1;
-      animation: float 6s ease-in-out infinite alternate;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes float {
-      from { transform: translateY(0); }
-      to { transform: translateY(-15px); }
-    }@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
 *{
     margin: 0;
@@ -113,8 +8,8 @@
 }
 
 body{
-    background-color: #c9d6ff;
-    background: linear-gradient(to right, #e2e2e2, #c9d6ff);
+    background-color: #e2e2e2;
+    background: linear-gradient(to right, #f0f0f0, #c9d6ff);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -122,6 +17,7 @@ body{
     height: 100vh;
 }
 
+/* === MAIN CONTAINER === */
 .container{
     background-color: #fff;
     border-radius: 30px;
@@ -151,8 +47,9 @@ body{
     margin: 15px 0 10px;
 }
 
+/* === BUTTONS === */
 .container button{
-    background-color: #512da8;
+    background-color: #000;
     color: #fff;
     font-size: 12px;
     padding: 10px 45px;
@@ -163,6 +60,11 @@ body{
     text-transform: uppercase;
     margin-top: 10px;
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.container button:hover{
+    background-color: #333;
 }
 
 .container button.hidden{
@@ -170,6 +72,7 @@ body{
     border-color: #fff;
 }
 
+/* === FORMS === */
 .container form{
     background-color: #fff;
     display: flex;
@@ -191,6 +94,7 @@ body{
     outline: none;
 }
 
+/* === FORM PANELS === */
 .form-container{
     position: absolute;
     top: 0;
@@ -233,6 +137,7 @@ body{
     }
 }
 
+/* === SOCIAL ICONS === */
 .social-icons{
     margin: 20px 0;
 }
@@ -248,6 +153,7 @@ body{
     height: 40px;
 }
 
+/* === TOGGLE CONTAINER === */
 .toggle-container{
     position: absolute;
     top: 0;
@@ -265,14 +171,14 @@ body{
     border-radius: 0 150px 100px 0;
 }
 
+/* === BLACK THEME GRADIENT === */
 .toggle{
-    background-color: #512da8;
+    background-color: #000;
     height: 100%;
-    background: linear-gradient(to right, #5c6bc0, #512da8);
+    background: linear-gradient(to right, #000, #333);
     color: #fff;
     position: relative;
     left: -100%;
-    height: 100%;
     width: 200%;
     transform: translateX(0);
     transition: all 0.6s ease-in-out;
@@ -282,6 +188,7 @@ body{
     transform: translateX(50%);
 }
 
+/* === PANEL TEXT === */
 .toggle-panel{
     position: absolute;
     width: 50%;
