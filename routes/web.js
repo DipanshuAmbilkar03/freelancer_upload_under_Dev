@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Assignment = require('../model/assignment');
 const { ensureAuthenticated, isLoggedIn } = require('../middleware/auth');
+const mongoose = require('mongoose');
 
 // Home page route
 router.get('/', (req, res) => {
@@ -48,6 +49,14 @@ router.get('/assignments', async (req, res) => {
 
 // Assignment detail route
 router.get('/assignments/:id', async (req, res) => {
+    const { id } = req.params;
+    console.log('Assignment ID received:', req.params.id, 'Full URL:', req.originalUrl);
+    
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        console.error('Invalid assignment ID:', id);
+        return res.status(400).send('Invalid assignment ID');
+    }
+
     try {
         const assignment = await Assignment.findById(req.params.id).populate('postedBy', 'username email');
         if (!assignment) return res.status(404).send('Assignment not found');

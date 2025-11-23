@@ -36,7 +36,7 @@
         </nav>
     </aside>
 
-        <!-- Main -->
+    <!-- Main -->
     <div class="main">
         <h1>Assignments</h1>
         <h2>Available Assignments</h2>
@@ -85,9 +85,13 @@
         const header = document.querySelector('.header');
 
         toggleBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
-        header.classList.toggle('collapsed');
-        });
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('show'); // slide in/out sidebar on mobile
+            } else {
+                sidebar.classList.toggle('collapsed');
+                header.classList.toggle('collapsed');
+            }
+            });
     </script>
 </body>
 </html>
