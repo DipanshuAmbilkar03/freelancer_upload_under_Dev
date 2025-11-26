@@ -3,56 +3,51 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
 const session = require('express-session');
-const multer = require('multer');
-const fileUpload = require('express-fileupload');
 
 dotenv.config();
 
-const User = require('./model/user');
-const Assignment = require('./model/assignment');
 const apiRoutes = require('./routes/api');
 const webRoutes = require('./routes/web');
 
 const app = express();
 
-// Enable file upload
-app.use(fileUpload());
-
 // Serve uploaded files as static
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads/pdfs', express.static(path.join(__dirname, 'uploads/pdfs')));
 
-/* middleware */
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// View engine setup
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({ secret: 'secret', resave: false, saveUninitialized: true }));
 
-/* session for browser flows */
+// Body parsers (needed for login/register forms)
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Sessions
 app.use(session({
-  secret: process.env.SESSION_SECRET || '7tbdr6d6nc85758gm8yymv8mc8rxe75b79ntc80yb',
+  secret: process.env.SESSION_SECRET || 'secret',
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 1000 * 60 * 60 } 
+  cookie: { maxAge: 1000 * 60 * 60 }
 }));
 
-// Add this middleware so EJS partials can read currentUser / user
+// Make user data available to all templates
 app.use((req, res, next) => {
-  const user = req.session && req.session.user ? req.session.user : null;
+  const user = req.session?.user || null;
   res.locals.currentUser = user;
   res.locals.user = user;
-  res.locals.currentUserId = user ? user.userId : null; // <-- added
+  res.locals.currentUserId = user ? user.userId : null;
   next();
 });
 
-/* mongo */ 
+/* MongoDB */
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/freelancer';
 mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+  .catch(err => console.error('MongoDB connection error:', err));
 
-/* routes */
+/* Routes */
 app.use('/api', apiRoutes);
 app.use('/', webRoutes);
 
