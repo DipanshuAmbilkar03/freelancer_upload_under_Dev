@@ -46,7 +46,15 @@
         <% } else { %>
             <% assignments.forEach(a => { %>
             <div class="card">
-                <img class="card-img" src="<%= a.image && a.image.length ? a.image : 'https://via.placeholder.com/600x360' %>" alt="assignment image">
+
+            <img 
+            class="card-img" 
+            src="<%= (typeof a.image === 'string') 
+                    ? a.image 
+                    : (a.image && a.image.path ? a.image.path : 'https://via.placeholder.com/600x360') %>" 
+            alt="assignment image">
+
+
                 <div class="card-body">
                 <h3 class="card-title">
                     <a href="/assignments/<%= a._id %>"><%= a.title %></a>

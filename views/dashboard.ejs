@@ -52,7 +52,7 @@
         </div>
 
         <div class="header-right">
-          <a href="/upload" class="btn">Upload</a>
+          <a href="/api/pdfUpload" class="btn">Upload</a>
           <a href="/saved" class="btn">Saved</a>
           <a href="/post-assignment" class="btn btn-new-assignment">+ Post New</a>
 
@@ -69,18 +69,39 @@
 
       <main class="content profile-layout">
         <div class="assignment-info-card">
-          <h3>Assignment Info</h3>
+  <h3>Assignment Info</h3>
 
-          <% assignments.forEach(assignment => { %>
-            <div class="assignment-item">
-              <h4><a href="/assignments/<%= assignment._id %>"><%= assignment.title %></a></h4>
-              <div class="assignment-details">
-                <span>Status: <span class="status <%= assignment.status.toLowerCase() %>"><%= assignment.status %></span></span>
-                <span>Starting Price: <strong>Rs. <%= assignment.startingPrice %></strong></span>
-              </div>
-            </div>
+  <% assignments.forEach(assignment => { %>
+    <div class="assignment-item">
+      <h4><a href="/assignments/<%= assignment._id %>"><%= assignment.title %></a></h4>
+      <div class="assignment-details">
+        <span>Status: 
+          <span class="status <%= assignment.status.toLowerCase() %>">
+            <%= assignment.status %>
+          </span>
+        </span>
+        <span>Starting Price: 
+          <strong>Rs. <%= assignment.startingPrice %></strong>
+        </span>
+      </div>
+
+      <% if (assignment.pdfs && assignment.pdfs.length > 0) { %>
+        <p><strong>Attached PDFs:</strong></p>
+        <ul>
+          <% assignment.pdfs.forEach(pdf => { %>
+            <li>
+              <a href="<%= pdf.file.path %>" target="_blank">
+                <%= pdf.file.filename %>
+              </a>
+            </li>
           <% }) %>
-        </div>
+        </ul>
+      <% } %>
+
+    </div>
+  <% }) %>
+</div>
+
 
         <section class="column column-posts">
           <h2>Post New Assignment</h2>
