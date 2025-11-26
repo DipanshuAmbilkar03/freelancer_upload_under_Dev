@@ -20,7 +20,7 @@ main()
     console.error('Init error:', err);
     process.exit(1);
   });
-
+  
 async function main() {
   await mongoose.connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });
   console.log('connected to DB');
@@ -38,22 +38,33 @@ async function initDB() {
     console.log('demo user exists');
   }
 
-  // clear existing assignments (dev)
   await Assignment.deleteMany({});
   console.log('cleared assignments');
 
-  // insert samples mapping deadline offsets
-  const samples = initData.data.map((s) => ({
-    title: s.title,
-    description: s.description,
-    startingPrice: s.startingPrice,
-    image: s.image || '',
-    subject: s.subject || '',
-    deadline: new Date(Date.now() + (s.deadlineOffsetDays || 7) * 24 * 60 * 60 * 1000),
-    status: s.status || 'open',
-    postedBy: demoUser._id,
-    category: s.category || ''
-  }));
+  // const samples = initData.data.map((s) => ({
+  //   title: s.title,
+  //   description: s.description,
+  //   startingPrice: s.startingPrice,
+  //   image: s.image || '',
+  //   subject: s.subject || '',
+  //   deadline: new Date(Date.now() + (s.deadlineOffsetDays || 7) * 24 * 60 * 60 * 1000),
+  //   status: s.status || 'open',
+  //   postedBy: demoUser._id,
+  //   category: s.category || ''
+  // }));
+  
+const samples = initData.data.map((s) => ({
+  title: s.title,
+  description: s.description,
+  startingPrice: s.startingPrice,
+  image: s.image,
+  subject: s.subject || '',
+  deadline: new Date(Date.now() + (s.deadlineOffsetDays || 7) * 24 * 60 * 60 * 1000),
+  status: s.status || 'open',
+  postedBy: demoUser._id,
+  category: s.category || ''
+}));
+
 
   await Assignment.insertMany(samples);
   console.log('inserted sample assignments:', samples.length);
