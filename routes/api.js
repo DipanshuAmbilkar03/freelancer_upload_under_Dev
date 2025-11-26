@@ -2,12 +2,27 @@ const express = require('express');
 const router = express.Router();
 const User = require('../model/user');  
 const Assignment = require('../model/assignment');
+const AssignmentPDF = require('../model/assignmentPdf');
 const Bid = require('../model/bid');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const ensureAuthenticated = require('../middleware/post_auth');
 const path = require('path');
 const fs = require('fs'); 
+
+const multer = require('multer');
+const uploadDir = path.join(__dirname, '../uploads');
+
+// Ensure the uploads folder exists
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
+});
+
+const upload = multer({ storage });
+
 
 // User registration
 router.post('/users/register', async (req, res) => {
@@ -88,44 +103,91 @@ router.post('/session-from-token', (req, res) => {
 //     }
 // });
 
-router.post('/assignments', ensureAuthenticated, async (req, res) => {
-    try {
-        const { title, description, startingPrice, subject, deadline, category } = req.body;
-        const userId = req.user.userId; // ensureAuthenticated sets this
+// ✅ Create assignment (image upload)
+router.post('/assignments', ensureAuthenticated, upload.single('image'), async (req, res) => {
+  try {
+    const { title, description, startingPrice, subject, deadline, category } = req.body;
+    const userId = req.user.userId;
 
-        if (!req.files || !req.files.image) {
-            return res.status(400).send('No file uploaded');
-        }
-
-        const imageFile = req.files.image;
-        const uploadDir = path.join(__dirname, '../uploads');
-        if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
-
-        const filename = Date.now() + '-' + imageFile.name;
-        const uploadPath = path.join(uploadDir, filename);
-        await imageFile.mv(uploadPath);
-
-        const assignment = new Assignment({
-            title,
-            description,
-            startingPrice,
-            subject,
-            deadline,
-            category,
-            postedBy: userId,
-            image: {
-                filename: imageFile.name,
-                path: `/uploads/${filename}`,
-                mimetype: imageFile.mimetype
-            }
-        });
-
-        await assignment.save();
-        res.redirect("/dashboard")
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
+    // Multer stores uploaded file in req.file
+    if (!req.file) {
+      return res.status(400).send('No file uploaded');
     }
+
+    const assignment = new Assignment({
+      title,
+      description,
+      startingPrice,
+      subject,
+      deadline,
+      category,
+      postedBy: userId,
+      image: {
+        filename: req.file.filename,
+        path: `/uploads/${req.file.filename}`,
+        mimetype: req.file.mimetype
+      }
+    });
+
+    await assignment.save();
+    console.log('Assignment saved:', assignment.title);
+    res.redirect('/dashboard');
+  } catch (err) {
+    console.error('Error creating assignment:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PDF Upload Page
+router.get("/pdfUpload", ensureAuthenticated, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const assignments = await Assignment.find({ postedBy: userId });
+
+        res.render('upload.ejs', { user: req.user, assignments });
+    } catch (error) {
+        console.error("Error loading PDF upload page:", error);
+        res.status(500).send("Server error while loading upload page");
+    }
+    });
+    
+router.post('/pdfUpload', ensureAuthenticated, upload.single('image'), async (req, res) => {
+  try {
+    const { assignmentId } = req.body;
+    const userId = req.user.userId;
+
+    if (!req.file) {
+      return res.status(400).send('No PDF uploaded');
+    }
+
+    const assignment = await Assignment.findById(assignmentId);
+    if (!assignment) {
+      return res.status(404).send('Assignment not found');
+    }
+
+    const pdf = new AssignmentPDF({
+      assignment: assignment._id,
+      uploadedBy: userId,
+      file: {
+        filename: req.file.filename,
+        path: `/uploads/${req.file.filename}`,
+        mimetype: req.file.mimetype
+      }
+    });
+
+    await pdf.save();
+
+    // Link PDF to the assignment (optional, but useful)
+    assignment.pdfs = assignment.pdfs || [];
+    assignment.pdfs.push(pdf._id);
+    await assignment.save();
+
+    console.log('PDF uploaded successfully:', pdf.file.filename);
+    res.redirect('/dashboard');
+  } catch (error) {
+    console.error('PDF upload error:', error);
+    res.status(500).send('Server error during PDF upload');
+  }
 });
 
 
