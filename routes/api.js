@@ -23,7 +23,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-
 // User registration
 router.post('/users/register', async (req, res) => {
     const { username, password, email } = req.body;
@@ -103,7 +102,6 @@ router.post('/session-from-token', (req, res) => {
 //     }
 // });
 
-// ✅ Create assignment (image upload)
 router.post('/assignments', ensureAuthenticated, upload.single('image'), async (req, res) => {
   try {
     const { title, description, startingPrice, subject, deadline, category } = req.body;

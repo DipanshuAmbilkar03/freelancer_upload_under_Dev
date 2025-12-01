@@ -5,9 +5,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User Dashboard</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <!-- <link rel="stylesheet" href="/css/style.css"> -->
   <link rel="stylesheet" href="/css/newheader.css">
   <link rel="stylesheet" href="/css/profile.css">
+  <link rel="stylesheet" href="/css/dashColor.css">
   <style>
     .pdf-viewer {
       margin-top: 15px;
@@ -68,74 +69,47 @@
       </header>
 
       <main class="content profile-layout">
-        <div class="assignment-info-card">
-  <h3>Assignment Info</h3>
-
-  <% assignments.forEach(assignment => { %>
-    <div class="assignment-item">
-      <h4><a href="/assignments/<%= assignment._id %>"><%= assignment.title %></a></h4>
-      <div class="assignment-details">
-        <span>Status: 
-          <span class="status <%= assignment.status.toLowerCase() %>">
-            <%= assignment.status %>
-          </span>
-        </span>
-        <span>Starting Price: 
-          <strong>Rs. <%= assignment.startingPrice %></strong>
-        </span>
-      </div>
-
-      <% if (assignment.pdfs && assignment.pdfs.length > 0) { %>
-        <p><strong>Attached PDFs:</strong></p>
-        <ul>
-          <% assignment.pdfs.forEach(pdf => { %>
-            <li>
-              <a href="<%= pdf.file.path %>" target="_blank">
-                <%= pdf.file.filename %>
-              </a>
-            </li>
-          <% }) %>
-        </ul>
-      <% } %>
-
-    </div>
-  <% }) %>
-</div>
-
-
-        <section class="column column-posts">
-          <h2>Post New Assignment</h2>
-          <h3>My Posts</h3>
+        <section class="assignment-list">
+          <h3>My Assignments</h3>
           <% if (assignments.length === 0) { %>
-            <p>No posts yet.</p>
+            <p>No assignments posted yet.</p>
           <% } else { %>
-            <div class="pdf-viewer">
-              <% 
-                // Find first PDF assignment
-                let firstPdf = assignments.find(a => a.image && a.image.mimetype && a.image.mimetype === 'application/pdf');
-              %>
-              <% if (firstPdf) { %>
-                <iframe id="pdfFrame" src="<%= firstPdf.image.path %>" frameborder="0"></iframe>
-              <% } else { %>
-                <p>No PDFs uploaded yet.</p>
-              <% } %>
-            </div>
-
-            <div class="pdf-list">
-              <% assignments.forEach(assignment => { %>
-                <% if (assignment.image && assignment.image.mimetype === 'application/pdf') { %>
-                  <a onclick="showPdf('<%= assignment.image.path %>')"><%= assignment.title %></a>
-                <% } %>
-              <% }) %>
-            </div>
+            <% assignments.forEach(assignment => { %>
+              <div class="assignment-card">
+                <h4><%= assignment.title %></h4>
+                <p><%= assignment.description.slice(0, 150) %>...</p>
+                <a href="/assignments/<%= assignment._id %>" class="read-more">Full description</a>
+                <p class="uploaded-by">
+                  Uploaded by <strong><%= assignment.postedBy?.username%></strong> 
+                  on <%= new Date(assignment.createdAt).toLocaleDateString() %>
+                </p>
+              </div>
+            <% }) %>
           <% } %>
         </section>
 
-        <section class="column column-suggestions">
-          <h2>Suggestions</h2>
-          <p>Try improving your assignment descriptions to attract more freelancers.</p>
+        <!-- RIGHT: PDF viewer -->
+        <section class="pdf-viewer-column">
+          <h3>Preview</h3>
+          <% 
+            let firstPdf = assignments.find(a => a.image && a.image.mimetype === 'application/pdf');
+          %>
+          <% if (firstPdf) { %>
+            <iframe id="pdfFrame" src="<%= firstPdf.image.path %>" frameborder="0"></iframe>
+          <% } else { %>
+            <p>No PDFs uploaded yet.</p>
+          <% } %>
+
+          <div class="pdf-list">
+            <% assignments.forEach(assignment => { %>
+              <% if (assignment.image && assignment.image.mimetype === 'application/pdf') { %>
+                <a onclick="showPdf('<%= assignment.image.path %>')"><%= assignment.title %></a>
+              <% } %>
+            <% }) %>
+          </div>
         </section>
-      </main>
+  </main>
+
 
       <%- include('partials/footer') %>
 
@@ -144,15 +118,49 @@
   </div>
 
   <script>
+    // Sidebar logic (keep existing)
     const menuToggle = document.getElementById('menuToggle');
     const sidebar = document.getElementById('sidebar');
+    const overlay = document.createElement('div');
+    overlay.classList.add('overlay');
+    document.body.appendChild(overlay);
+
     menuToggle.addEventListener('click', () => {
       sidebar.classList.toggle('sidebar-open');
-    }); 
+      overlay.classList.toggle('active');
+    });
 
-    function showPdf(path) {
-      document.getElementById("pdfFrame").src = path;
-    }
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('sidebar-open');
+      overlay.classList.remove('active');
+    });
+
+    // -------- Avatar Hover Delay Logic --------
+    const avatar = document.querySelector('.user-avatar');
+    const avatarInfo = document.querySelector('.avatar-info');
+
+    let hideTimeout;
+
+    // Show on hover
+    avatar.addEventListener('mouseenter', () => {
+      clearTimeout(hideTimeout);
+      avatarInfo.classList.add('show');
+    });
+
+    // Keep open if hovering inside the dropdown
+    avatarInfo.addEventListener('mouseenter', () => {
+      clearTimeout(hideTimeout);
+    });
+
+    // Hide after small delay when mouse leaves
+    avatar.addEventListener('mouseleave', () => {
+      hideTimeout = setTimeout(() => avatarInfo.classList.remove('show'), 250);
+    });
+
+    avatarInfo.addEventListener('mouseleave', () => {
+      hideTimeout = setTimeout(() => avatarInfo.classList.remove('show'), 250);
+    });
+
   </script>
 
 </body>

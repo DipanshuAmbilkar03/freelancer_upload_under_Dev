@@ -114,60 +114,6 @@ h3 {
   padding: 2rem;
 }
 
-/* User Avatar Info */
-.user-avatar-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.user-avatar {
-  width: 40px;
-  height: 40px;
-  background-color: #007bff;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.user-avatar:hover {
-  background-color: #0056b3;
-}
-
-.avatar-info {
-  display: none;
-  position: absolute;
-  top: 55px;
-  right: 0;
-  background: #fff;
-  color: #333;
-  border: 1px solid #ddd;
-  padding: 14px;
-  width: 220px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-  border-radius: 8px;
-  z-index: 100;
-}
-
-.user-avatar-wrapper:hover .avatar-info {
-  display: block;
-}
-
-.avatar-info a {
-  display: block;
-  color: #007bff;
-  text-decoration: none;
-  padding: 8px 0;
-  font-size: 15px;
-}
-
-.avatar-info a:hover {
-  text-decoration: underline;
-}
 
 /* Profile Layout */
 .profile-layout {

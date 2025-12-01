@@ -28,7 +28,7 @@ router.get('/dashboard', ensureAuthenticated,isLoggedIn, async (req, res) => {
             select: 'file uploadedBy', 
         })
         .sort({ createdAt: -1 });
-        res.render('dashboard', { user: req.user, assignments , });
+        res.render('dashboard', { user: req.user, assignments });
     } catch (err) {
         console.error('Error fetching assignments:', err);
         res.status(500).send('Server error');
