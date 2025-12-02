@@ -18,7 +18,6 @@
     </div>
   </header>
 
-
   <div class="container">
     <h2>
       <%= assignment.title %>
@@ -28,11 +27,11 @@
     </h2>
 
     <img 
-            class="card-img" 
-            src="<%= (typeof assignment.image === 'string') 
-                    ? assignment.image 
-                    : (assignment.image && assignment.image.path ? assignment.image.path : 'https://via.placeholder.com/400x360') %>" 
-            alt="assignment image">
+      class="card-img" 
+      src="<%= (typeof assignment.image === 'string') 
+              ? assignment.image 
+              : (assignment.image && assignment.image.path ? assignment.image.path : 'https://via.placeholder.com/400x360') %>" 
+      alt="assignment image">
 
     <p><strong>Description:</strong> <%= assignment.description %></p>
     <p><strong>Starting Price:</strong> Rs.<%= assignment.startingPrice %></p>
@@ -42,5 +41,53 @@
     <p><strong>Posted By:</strong> <%= assignment.postedBy.username %></p>
   </div>
 
-</body>
+  <hr>
+
+<h3>Attached PDFs</h3>
+
+<% if (assignment.pdfs && assignment.pdfs.length > 0) { %>
+  <div class="pdf-grid">
+    <% assignment.pdfs.forEach((pdf, index) => { %>
+      <div class="pdf-thumb" onclick="openPdfModal('<%= pdf.file.path %>')">
+        <iframe src="<%= pdf.file.path %>" frameborder="0"></iframe>
+        <p><strong><%= pdf.file.filename %></strong></p>
+      </div>
+    <% }) %>
+  </div>
+
+  <!-- PDF Modal -->
+  <div id="pdfModal" class="pdf-modal">
+    <span class="close-btn" onclick="closePdfModal()">&times;</span>
+    <iframe id="pdfViewer" src="" frameborder="0"></iframe>
+  </div>
+
+<% } else { %>
+  <p>No PDFs uploaded for this assignment.</p>
+<% } %>
+
+<script>
+  function openPdfModal(path) {
+    const modal = document.getElementById("pdfModal");
+    const viewer = document.getElementById("pdfViewer");
+    viewer.src = path;
+    modal.style.display = "flex";
+    document.body.style.overflow = "hidden";
+  }
+
+  function closePdfModal() {
+    const modal = document.getElementById("pdfModal");
+    const viewer = document.getElementById("pdfViewer");
+    viewer.src = "";
+    modal.style.display = "none";
+    document.body.style.overflow = "auto";
+  }
+
+  // Optional: Close modal by clicking outside
+  window.addEventListener("click", function(e) {
+    const modal = document.getElementById("pdfModal");
+    if (e.target === modal) closePdfModal();
+  });
+</script>
+
+  </body>
 </html>
