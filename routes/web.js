@@ -3,6 +3,7 @@ const router = express.Router();
 const Assignment = require('../model/assignment');
 const { ensureAuthenticated, isLoggedIn } = require('../middleware/auth');
 const mongoose = require('mongoose');
+const assignmentpdfs = require('../model/assignmentPdf');
 
 // Home page route
 router.get('/', (req, res) => {
@@ -28,6 +29,9 @@ router.get('/dashboard', ensureAuthenticated,isLoggedIn, async (req, res) => {
             select: 'file uploadedBy', 
         })
         .sort({ createdAt: -1 });
+
+        // const pdfs = await assignmentpdfs.find({assignment: userId });
+
         res.render('dashboard', { user: req.user, assignments });
     } catch (err) {
         console.error('Error fetching assignments:', err);
@@ -63,7 +67,12 @@ router.get('/assignments/:id', async (req, res) => {
     }
 
     try {
-        const assignment = await Assignment.findById(req.params.id).populate('postedBy', 'username email');
+        const assignment = await Assignment.findById(id)
+        .populate('postedBy', 'username email')
+        .populate({
+        path: 'pdfs',
+        select: 'file uploadedBy',
+    });
         if (!assignment) return res.status(404).send('Assignment not found');
         res.render('assignment-detail', { assignment, user: req.user });
     } catch (err) {
