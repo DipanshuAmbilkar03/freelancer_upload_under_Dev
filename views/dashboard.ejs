@@ -88,26 +88,38 @@
           <% } %>
         </section>
 
-        <!-- RIGHT: PDF viewer -->
         <section class="pdf-viewer-column">
-          <h3>Preview</h3>
+          <h3>PDF Preview</h3>
+
           <% 
-            let firstPdf = assignments.find(a => a.image && a.image.mimetype === 'application/pdf');
+            // Find first assignment with PDFs
+            const firstAssignmentWithPdf = assignments.find(a => a.pdfs && a.pdfs.length > 0);
           %>
-          <% if (firstPdf) { %>
-            <iframe id="pdfFrame" src="<%= firstPdf.image.path %>" frameborder="0"></iframe>
+
+          <% if (firstAssignmentWithPdf) { %>
+            <!-- Show first PDF -->
+            <iframe id="pdfFrame" src="<%= firstAssignmentWithPdf.pdfs[0].file.path %>" frameborder="0"></iframe>
+
+            <div class="pdf-list">
+              <% assignments.forEach(assignment => { %>
+                <% if (assignment.pdfs && assignment.pdfs.length > 0) { %>
+                  <% assignment.pdfs.forEach(pdf => { %>
+                    <a onclick="showPdf('<%= pdf.file.path %>')"><%= assignment.title %> - <%= pdf.file.filename %></a>
+                  <% }) %>
+                <% } %>
+              <% }) %>
+            </div>
           <% } else { %>
             <p>No PDFs uploaded yet.</p>
           <% } %>
-
-          <div class="pdf-list">
-            <% assignments.forEach(assignment => { %>
-              <% if (assignment.image && assignment.image.mimetype === 'application/pdf') { %>
-                <a onclick="showPdf('<%= assignment.image.path %>')"><%= assignment.title %></a>
-              <% } %>
-            <% }) %>
-          </div>
         </section>
+
+        <script>
+          function showPdf(path) {
+            document.getElementById('pdfFrame').src = path;
+          }
+        </script>
+
   </main>
 
 
