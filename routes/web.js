@@ -4,6 +4,7 @@ const Assignment = require('../model/assignment');
 const { ensureAuthenticated, isLoggedIn } = require('../middleware/auth');
 const mongoose = require('mongoose');
 const assignmentpdfs = require('../model/assignmentPdf');
+const user = require("../model/user");
 
 // Home page route
 router.get('/', (req, res) => {
@@ -49,7 +50,7 @@ router.get('/post-assignment', ensureAuthenticated, (req, res) => {
 router.get('/assignments', async (req, res) => {
     try {
         const assignments = await Assignment.find().sort({ createdAt: -1 }).populate('postedBy', 'username');
-        res.render('assignments', { assignments, currentUserId: req.user ? req.user.userId : null });
+        res.render('assignments', { user ,assignments, currentUserId: req.user ? req.user.userId : null });
     } catch (err) {
         console.error('Error loading assignments:', err);
         res.status(500).send('Server error');
