@@ -24,23 +24,39 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // User registration
-router.post('/users/register', async (req, res) => {
-    const { username, password, email } = req.body;
-    try {
-        const existingUser = await User.findOne({ $or: [{ username }, { email }] });
-        if (existingUser) {
-            return res.status(400).json({ error: 'Username or email already exists' });
-        }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ username, password: hashedPassword, email });
-        await user.save();
-        // res.status(201).json({ message: 'User registered successfully' });
-        // confirm("You have been logged in.");
-        res.redirect("/assignments");
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+router.post('/users/register', upload.single('avatar'), async (req, res) => {
+  const { username, password, email } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Username or email already exists' });
     }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    let avatarPath;
+    if (req.file) {
+      avatarPath = `/uploads/${req.file.filename}`;
+    } else {
+      avatarPath = `/assets/pfp.png`;
+    }
+
+    const user = new User({
+      username,
+      password: hashedPassword,
+      email,
+      avatar: avatarPath
+    });
+
+    await user.save();
+
+    res.redirect('/assignments');
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
+
 
 // User login
 
