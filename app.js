@@ -13,6 +13,7 @@ const app = express();
 
 // Serve uploaded files as static
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/uploads/pdfs', express.static(path.join(__dirname, 'uploads/pdfs')));
 
 // View engine setup
