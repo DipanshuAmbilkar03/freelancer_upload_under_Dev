@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Assignments - Freelancer Bidding Site</title>
-  <link rel="stylesheet" href="/css/assignments.css">
-  <script src="/js/dashboard.js" defer></script>
+    <meta charset="UTF-8">
+    <title>Assignments - Freelancer Bidding Site</title>
+    <link rel="stylesheet" href="/css/assignments.css">
+    <link rel="stylesheet" href="/css/assignments2.css">
+    <script src="/js/dashboard.js" defer></script>
 </head>
 <body>
     <header class="header">
@@ -16,14 +17,13 @@
             <div class="user-actions">
                 <button class="toggle-btn" id="toggleBtn">☰</button>
                 <a href="/dashboard">Profile</a>
-                <img src="<%= user.avatar %>" alt="Profile Picture" width="50" height="50">
                 <a href="/logout">Logout</a>
                 
             </div>
         </div>
     </header>
 
-        <!-- Sidebar -->
+    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <nav>
             <a href="/">Home</a>
@@ -46,39 +46,41 @@
             <p>No assignments available.</p>
         <% } else { %>
             <% assignments.forEach(a => { %>
-            <div class="card">
-
-            <img 
-            class="card-img" 
-            src="<%= (typeof a.image === 'string') 
-                    ? a.image 
-                    : (a.image && a.image.path ? a.image.path : 'https://via.placeholder.com/600x360') %>" 
-            alt="assignment image">
-
-
-                <div class="card-body">
-                <h3 class="card-title">
-                    <a href="/assignments/<%= a._id %>"><%= a.title %></a>
-                </h3>
-                <p class="card-desc">
-                    <%= a.description ? (a.description.length > 150 ? a.description.slice(0,150) + '...' : a.description) : '' %>
-                </p>
-                <div class="meta">
-                    <strong>Subject:</strong> <%= a.subject || 'N/A' %> | 
-                    <strong>Category:</strong> <%= a.category || 'N/A' %> | 
-                    <strong>Price:</strong> Rs.<%= a.startingPrice || 0 %>
+                <div class="card horizontal-card">
+                    <div class="avatar-section">
+                    <img
+                        src="<%= a.postedBy?.avatar || '/assets/pfp.png' %>"
+                        alt="User Avatar"
+                        class="avatar"
+                    />
+                    <span class="username">
+                        <%= a.postedBy?.username || 'Deleted User' %>
+                    </span>
+                    </div>
+                
+                    <div class="content-section">
+                    <h3 class="card-title">
+                        <a href="/assignments/<%= a._id %>"><%= a.title %></a>
+                    </h3>
+                
+                    <p class="card-desc">
+                        <%= a.description?.length > 180
+                            ? a.description.slice(0,180) + '...'
+                            : a.description %>
+                    </p>
+                
+                    <div class="meta">
+                        <span><strong>Subject:</strong> <%= a.subject || 'N/A' %></span>
+                        <span><strong>Category:</strong> <%= a.category || 'N/A' %></span>
+                    </div>
+                    </div>
+                
+                    <div class="price-section">
+                    <div class="price">₹ <%= a.startingPrice %></div>
+                    <small>Starting Price</small>
+                    </div>
+                
                 </div>
-                <div class="footer">
-                    <small>Posted by: <%= a.postedBy && a.postedBy.username ? a.postedBy.username : 'Unknown' %></small>
-                    <% if (currentUserId) { %>
-                    <form action="/api/assignments/<%= a._id %>/bid" method="POST">
-                        <input type="number" name="bidAmount" placeholder="Enter your bid" min="1" required>
-                        <button type="submit">Bid</button>
-                    </form>
-                    <% } %>
-                </div>
-                </div>
-            </div>
             <% }) %>
         <% } %>
         </div>
