@@ -21,6 +21,11 @@ router.get('/register', (req, res) => {
     res.render('register');
 });
 
+// router.get("/test/img",(req,res) => {
+//     console.log(user.body);
+//     res.render("test.ejs",{user});
+// })
+
 // Dashboard route
 router.get('/dashboard', ensureAuthenticated,isLoggedIn, async (req, res) => {
     try {
@@ -49,10 +54,16 @@ router.get('/post-assignment', ensureAuthenticated, (req, res) => {
 // View all assignments route
 router.get('/assignments', async (req, res) => {
     try {
-        const assignments = await Assignment.find().sort({ createdAt: -1 }).populate('postedBy', 'username');
-        res.render('assignments', { user ,assignments, currentUserId: req.user ? req.user.userId : null });
+        const assignments = await Assignment.find()
+            .sort({ createdAt: -1 })
+            .populate({
+                path: 'postedBy',
+                select: 'username avatar' 
+            });
+
+        res.render('assignments', { assignments });
     } catch (err) {
-        console.error('Error loading assignments:', err);
+        console.error(err);
         res.status(500).send('Server error');
     }
 });

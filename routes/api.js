@@ -26,7 +26,9 @@ const upload = multer({ storage });
 // User registration
 router.post('/users/register', upload.single('avatar'), async (req, res) => {
   const { username, password, email } = req.body;
-
+    // console.log("registered avater : ",req.avatar);  
+    // console.log("registered body : ",req.body);
+    // console.log("registered file : ",req.file);
   try {
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser) {
@@ -36,6 +38,7 @@ router.post('/users/register', upload.single('avatar'), async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     let avatarPath;
     if (req.file) {
+      // console.log("registered User Image : ",req.file.filename);
       avatarPath = `/uploads/${req.file.filename}`;
     } else {
       avatarPath = `/assets/pfp.png`;
