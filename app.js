@@ -3,11 +3,15 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
 const session = require('express-session');
+// const MongoStore = require("connect-mongo");
+const MongoStore = require("connect-mongo");(session);
+// const MongoStore = require('connect-mongo');
 
 dotenv.config();
 
 const apiRoutes = require('./routes/api');
 const webRoutes = require('./routes/web');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -25,20 +29,39 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
+app.use(cookieParser());
+
 // Sessions
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { maxAge: 1000 * 60 * 60 }
-}));
+// app.use(session({
+//   secret: process.env.SESSION_SECRET || 'secret',
+//   resave: false,
+//   saveUninitialized: false,
+//   cookie: { maxAge: 1000 * 60 * 60 }
+// }));
+
+app.use(
+  session({
+    name: "freelancer.sid",
+    secret: process.env.SESSION_SECRET || "super-secret-key",
+    resave: false,
+    saveUninitialized: false,
+
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 24
+    }
+  })
+);
 
 // Make user data available to all templates
 app.use((req, res, next) => {
-  const user = req.session?.user || null;
-  res.locals.currentUser = user;
+  const user = req.session.user || null;
   res.locals.user = user;
-  res.locals.currentUserId = user ? user.userId : null;
+  res.locals.currentUser = user;
+  res.locals.currentUserId = user ? user.id : null;
   next();
 });
 
@@ -49,8 +72,9 @@ mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .catch(err => console.error('MongoDB connection error:', err));
 
 /* Routes */
-app.use('/api', apiRoutes);
 app.use('/', webRoutes);
+app.use('/api', apiRoutes);
+
 
 /* server */
 const PORT = process.env.PORT || 8080;
