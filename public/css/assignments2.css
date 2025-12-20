@@ -1,4 +1,6 @@
-/* FULL WIDTH HORIZONTAL CARD */
+* {
+  margin: 0;
+}
 .horizontal-card {
     width: 100%;
     display: flex;
@@ -17,6 +19,7 @@
     flex-direction: column;
     align-items: center;
     min-width: 90px;
+    flex: 0 0 auto;
   }
   
   .avatar {
@@ -37,6 +40,9 @@
   /* CENTER SECTION */
   .content-section {
     flex: 1;
+    flex: 1 1 auto;    
+    min-width: 0;         
+    overflow: hidden;
   }
   
   .card-title a {
@@ -68,6 +74,9 @@
   .price-section {
     min-width: 120px;
     text-align: right;
+    place-items: center;
+    flex: 0 0 120px;
+    white-space: nowrap;
   }
   
   .price {
@@ -80,6 +89,14 @@
     font-size: 0.75rem;
     color: #9e9e9e;
   }
+/* 
+.content-section p,
+.content-section h3,
+.content-section span {
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+} */
+
   
   @media (max-width: 768px) {
     .horizontal-card {

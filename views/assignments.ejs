@@ -18,7 +18,7 @@
                 <button class="toggle-btn" id="toggleBtn">☰</button>
                 <a href="/dashboard">Profile</a>
                 <a href="/logout">Logout</a>
-                
+           
             </div>
         </div>
     </header>
@@ -48,36 +48,38 @@
             <% assignments.forEach(a => { %>
                 <div class="card horizontal-card">
                     <div class="avatar-section">
-                    <img
-                        src="<%= a.postedBy?.avatar || '/assets/pfp.png' %>"
-                        alt="User Avatar"
-                        class="avatar"
-                    />
-                    <span class="username">
-                        <%= a.postedBy?.username || 'Deleted User' %>
-                    </span>
+                        <img
+                            src="<%= a.postedBy?.avatar || '/assets/pfp.png' %>"
+                            alt="User Avatar"
+                            class="avatar"
+                        />
+                        <span class="username">
+                            <%= a.postedBy?.username || 'Deleted User' %>
+                        </span>
                     </div>
                 
                     <div class="content-section">
-                    <h3 class="card-title">
-                        <a href="/assignments/<%= a._id %>"><%= a.title %></a>
-                    </h3>
-                
-                    <p class="card-desc">
-                        <%= a.description?.length > 180
-                            ? a.description.slice(0,180) + '...'
-                            : a.description %>
-                    </p>
-                
-                    <div class="meta">
-                        <span><strong>Subject:</strong> <%= a.subject || 'N/A' %></span>
-                        <span><strong>Category:</strong> <%= a.category || 'N/A' %></span>
-                    </div>
+                        <h3 class="card-title">
+                            <a href="/assignments/<%= a._id %>"><%= a.title %></a>
+                        </h3>
+                    
+                        <p class="card-desc">
+                            <%= a.description?.length > 100
+                                ? a.description.slice(0,100) + '...'
+                                : a.description %>
+                        </p>
+                    
+                        <div class="meta">
+                            <span><strong>Subject:</strong> <%= a.subject || 'N/A' %></span>
+                            <span><strong>Category:</strong> <%= a.category || 'N/A' %></span>
+                        </div>
                     </div>
                 
                     <div class="price-section">
-                    <div class="price">₹ <%= a.startingPrice %></div>
-                    <small>Starting Price</small>
+                        <div class="price">₹ <%= a.startingPrice %></div>
+                        <!-- <small>Starting Price</small> -->
+                        <div ><small>Starting Price</small></div>
+                        <div class="price"><button>Checkout</button></div>
                     </div>
                 
                 </div>
