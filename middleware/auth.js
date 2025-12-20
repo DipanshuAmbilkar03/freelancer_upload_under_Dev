@@ -1,17 +1,13 @@
 // Simple session-based authentication middleware
 
 function ensureAuthenticated(req, res, next) {
-  if (req.session && req.session.user) {
-    req.user = req.session.user;
-    return next();
+  if (!req.session.user) {
+    return res.redirect('/login');
   }
-
-  if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  return res.redirect('/login');
+  req.user = req.session.user;
+  next();
 }
+
 
 function isLoggedIn(req, res, next) {
   if (req.session.user) {
