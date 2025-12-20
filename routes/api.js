@@ -77,7 +77,12 @@ router.post('/users/login', async (req, res) => {
         // If this is a browser navigation (Accept header includes text/html) OR client asked to create session
         const acceptsHtml = req.headers.accept && req.headers.accept.includes('text/html');
         if (acceptsHtml || createSession) {
-            req.session.user = payload; // create server session used by ensureAuthenticated
+              req.session.user = {
+              id: user._id,
+              username: user.username,
+              avatar: user.avatar
+            };
+             // create server session used by ensureAuthenticated
             return res.redirect('/assignments'); // for HTML nav
         }
 
@@ -87,18 +92,23 @@ router.post('/users/login', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
-// New: convert token -> session (useful when your client receives token first)
-router.post('/session-from-token', (req, res) => {
-    const { token } = req.body;
-    if (!token) return res.status(400).json({ error: 'token required' });
-    try {
-        const payload = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
-        req.session.user = { userId: payload.userId, username: payload.username, role: payload.role };
-        return res.json({ message: 'Session created' });
-    } catch (err) {
-        return res.status(401).json({ error: 'Invalid token' });
-    }
+
+router.get("/session-check", (req, res) => {
+  res.json(req.session);
 });
+
+// New: convert token -> session (useful when your client receives token first)
+// router.post('/session-from-token', (req, res) => {
+//     const { token } = req.body;
+//     if (!token) return res.status(400).json({ error: 'token required' });
+//     try {
+//         const payload = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
+//         req.session.user = { userId: payload.userId, username: payload.username, role: payload.role };
+//         return res.json({ message: 'Session created' });
+//     } catch (err) {
+//         return res.status(401).json({ error: 'Invalid token' });
+//     }
+// });
 
 // Create assignment
 // router.post('/assignments', ensureAuthenticated, async (req, res) => {
