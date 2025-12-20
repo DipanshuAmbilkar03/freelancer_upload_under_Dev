@@ -105,16 +105,21 @@ router.get('/file/:id', (req, res) => {
 });
 
 
-// logout
 router.get('/logout', (req, res) => {
     req.session.destroy(err => {
         if (err) {
-            console.log('Session destruction error:', err);
-            return res.redirect('/'); 
+            console.error('Session destruction error:', err);
+            return res.redirect('/');
         }
-        res.clearCookie('connect.sid');
-        res.redirect('/login');
+    
+        res.clearCookie('connect.sid', { path: '/' });
+        res.clearCookie('freelancer.sid', { path: '/' });
+        res.clearCookie('username-localhost-8888', { path: '/' });
+    
+        req.session = null;
+    
+        return res.redirect('/login');
+        });
     });
-});
 
 module.exports = router;
