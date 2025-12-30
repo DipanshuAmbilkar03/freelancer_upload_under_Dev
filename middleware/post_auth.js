@@ -1,22 +1,22 @@
 const jwt = require('jsonwebtoken');
 
 function ensureAuthenticated(req, res, next) {
-    const authHeader = req.headers.authorization;
-    if (!authHeader?.startsWith("Bearer ")) {
-        return res.status(401).json({ error: "Token required" });
-        }
-    
-        try {
-        const token = authHeader.split(" ")[1];
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = {
-            userId: payload.userId,
-            role: payload.role
-        };
-        next();
-        } catch {
-        res.status(401).json({ error: "Invalid token" });
-        }
+    if (!req.session || !req.session.user) {
+    return res.status(401).redirect('/login');
     }
+
+    try {
+    // Attach user info for downstream routes
+    req.user = {
+        userId: req.session.user.id,
+        username: req.session.user.username,
+        avatar: req.session.user.avatar
+        };
+    
+        next();
+    }catch {
+        req.status(401).json({error : "Invalid Token"})
+    }
+}
 
 module.exports = ensureAuthenticated;
