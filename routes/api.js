@@ -36,13 +36,28 @@ router.post('/users/register', upload.single('avatar'), async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    let defaultAvater = [
+      '/assets/pfp.png',
+      '/assets/pfp1.png',
+      '/assets/pfp2.png',
+      '/assets/pfp3.png',
+      '/assets/pfp4.png',
+      '/assets/pfp5.png',
+    ]
+
     let avatarPath;
+
     if (req.file) {
       // console.log("registered User Image : ",req.file.filename);
       avatarPath = `/uploads/${req.file.filename}`;
     } else {
-      avatarPath = `/assets/pfp.png`;
+      avatarPath = defaultAvater[
+        Math.floor(Math.random()*defaultAvater.length)
+      ];
     }
+
+    console.log(avatarPath);
 
     const user = new User({
       username,
