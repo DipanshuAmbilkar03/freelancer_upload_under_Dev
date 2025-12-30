@@ -57,7 +57,7 @@ body {
 }
 
 .menu-toggle:hover {
-  color: var(--accent);
+  /* color: var(--accent); */
   transform: scale(1.1);
 }
 
@@ -79,7 +79,7 @@ body {
 }
 
 .header-right .btn:hover {
-  background: var(--accent);
+  background: #121212;
   color: #fff;
 }
 
@@ -126,8 +126,7 @@ body {
 .sidebar ul li a.active {
   background-color: #111;
   border-left: 3px solid var(--accent);
-  color: var(--accent);
-}
+  color: #ffffff;}
 
 /* ----------- Overlay (Mobile) ----------- */
 .overlay {
@@ -173,7 +172,7 @@ body {
   height: 80vh;
   overflow-y: auto;
   padding-right: 10px;
-  border-right: 1px solid var(--border-color);
+  border-right: 3px solid var(--border-color);
 }
 
 /* ----------- Cards ----------- */
@@ -248,7 +247,7 @@ body {
 .user-avatar {
   width: 40px;
   height: 40px;
-  background-color: #007bff;
+  background-color: #121212;
   color: white;
   border-radius: 50%;
   display: flex;
