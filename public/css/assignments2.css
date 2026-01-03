@@ -11,6 +11,8 @@
     padding: 18px 22px;
     gap: 22px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+  
+    justify-content: space-between; /* KEY FIX */
   }
   
   /* LEFT SECTION */
@@ -40,9 +42,12 @@
   /* CENTER SECTION */
   .content-section {
     flex: 1;
-    flex: 1 1 auto;    
+    /* flex: 1 1 auto;     */
     min-width: 0;         
-    overflow: hidden;
+    /* overflow: hidden; */
+    display : flex;
+    justify-content: center;
+    flex-direction: column;
   }
   
   .card-title a {
@@ -71,31 +76,134 @@
   }
   
   /* RIGHT SECTION */
-  .price-section {
-    min-width: 120px;
-    text-align: right;
-    place-items: center;
-    flex: 0 0 120px;
-    white-space: nowrap;
-  }
-  
-  .price {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #1abc9c;
-  }
-  
-  .price-section small {
-    font-size: 0.75rem;
-    color: #9e9e9e;
-  }
-/* 
-.content-section p,
-.content-section h3,
-.content-section span {
-  word-wrap: break-word;
-  overflow-wrap: anywhere;
+/* RIGHT SECTION – PRICE AREA */
+.price-section {
+  position: relative;
+  flex: 0 0 140px;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Bookmark on the right side */
+.price-section a.saved {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  color: #bdbdbd;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.price-section .saved:hover {
+  color: #1abc9c;
+}
+
+/* Price */
+.price-section .price {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1abc9c;
+}
+
+/* Label */
+.price-section small {
+  font-size: 0.75rem;
+  color: #9e9e9e;
+}
+
+/* Checkout button */
+.price-section button {
+  margin-top: 6px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: #ffffff;
+  color: #000000;
+}
+
+/* EXTRA META ROW */
+/* .extra-meta {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: #bdbdbd;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: flex-start;
 } */
+
+.extra-meta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #bdbdbd;
+  flex-wrap: wrap;
+}
+
+
+.extra-meta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* STATUS BADGES */
+.status {
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status i {
+  font-size: 0.45rem;
+}
+
+/* Variants */
+.status.open {
+  background: rgba(26, 188, 156, 0.15);
+  color: #1abc9c;
+}
+
+.status.review {
+  background: rgba(241, 196, 15, 0.15);
+  color: #f1c40f;
+}
+
+.status.closed {
+  background: rgba(231, 76, 60, 0.15);
+  color: #e74c3c;
+}
+
+.deadline {
+  color: #f39c12;
+  font-weight: 500;
+}
+
+.deadline.urgent {
+  color: #e74c3c;
+  font-weight: 600;
+}
+
+.bids {
+  color: #9e9e9e;
+}
+
 
   
   @media (max-width: 768px) {
@@ -117,6 +225,24 @@
   
     .username {
       margin-top: 0;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .price-section {
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  
+    .price-section .saved {
+      position: static;
+      transform: none;
+    }
+  
+    .price-section small {
+      display: none;
     }
   }
   
