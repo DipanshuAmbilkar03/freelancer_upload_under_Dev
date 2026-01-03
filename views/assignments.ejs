@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/css/assignments.css">
     <link rel="stylesheet" href="/css/assignments2.css">
     <script src="/js/dashboard.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <header class="header">
@@ -72,13 +73,36 @@
                             <span><strong>Subject:</strong> <%= a.subject || 'N/A' %></span>
                             <span><strong>Category:</strong> <%= a.category || 'N/A' %></span>
                         </div>
+
+                        <div class="extra-meta">
+                            <span class="status open">
+                                <i class="fa-solid fa-circle"></i> <%= a.status %>
+                            </span>
+                        
+                            <span class="deadline">
+                                <i class="fa-regular fa-clock"></i>
+                                <%= a.deadline ? a.deadline : 'No deadline' %>
+                            </span>
+                        
+                            <span class="bids">
+                                <i class="fa-solid fa-gavel"></i>
+                                <%= a.bidCount || 0 %> bids
+                            </span>
+                        </div>
+    
                     </div>
                 
                     <div class="price-section">
-                        <div class="price">₹ <%= a.startingPrice %></div>
-                        <!-- <small>Starting Price</small> -->
-                        <div ><small>Starting Price</small></div>
-                        <div class="price"><button>Checkout</button></div>
+                        <div>
+                            <div class="price">₹ <%= a.startingPrice %></div>
+                            <!-- <small>Starting Price</small> -->
+                            <div ><small>Starting Price</small></div>
+                        </div>
+                        <div class="saved"><a class="saved" href="/assignments/<%=a.id_%>"><i class="fa-regular fa-bookmark"></i></a></div>
+                        <!-- <div>
+                            <span class="status review">In Review</span>
+                            <span class="status closed">Closed</span>
+                        </div> -->
                     </div>
                 
                 </div>
