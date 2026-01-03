@@ -234,30 +234,30 @@ router.post('/pdfUpload', ensureAuthenticated, upload.single('image'), async (re
 
 
 // Place a bid
-router.post('/assignments/:id/bid', ensureAuthenticated, async (req, res) => {
-    const { bidAmount, message } = req.body;
-    if (bidAmount <= 0) {
-        return res.status(400).json({ error: 'Bid amount must be greater than zero' });
-    }
-    try {
-        const assignment = await Assignment.findById(req.params.id);
-        if (!assignment || assignment.status === 'closed') {
-            return res.status(404).json({ error: 'Assignment not found or bidding is closed' });
-        }
-        const bid = new Bid({
-            assignment: assignment._id,
-            bidder: req.user.userId,  // now defined
-            bidAmount,
-            message
-        });
-        await bid.save();
-        assignment.bids.push(bid._id);
-        await assignment.save();
-        res.status(201).json({ message: 'Bid placed successfully', bid });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+// router.post('/assignments/:id/bid', ensureAuthenticated, async (req, res) => {
+//     const { bidAmount, message } = req.body;
+//     if (bidAmount <= 0) {
+//         return res.status(400).json({ error: 'Bid amount must be greater than zero' });
+//     }
+//     try {
+//         const assignment = await Assignment.findById(req.params.id);
+//         if (!assignment || assignment.status === 'closed') {
+//             return res.status(404).json({ error: 'Assignment not found or bidding is closed' });
+//         }
+//         const bid = new Bid({
+//             assignment: assignment._id,
+//             bidder: req.user.userId,  // now defined
+//             bidAmount,
+//             message
+//         });
+//         await bid.save();
+//         assignment.bids.push(bid._id);
+//         await assignment.save();
+//         res.status(201).json({ message: 'Bid placed successfully', bid });
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// });
 
 
 // Get assignment details with bids
