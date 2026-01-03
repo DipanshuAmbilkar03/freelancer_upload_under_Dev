@@ -9,7 +9,13 @@ const userSchema = new mongoose.Schema({
     type: String, 
     default: 'https://cdn-icons-png.flaticon.com/512/149/149071.png', 
     trim: true 
-  }
+  },
+  savedAssignments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Assignment'
+    }
+  ]
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
