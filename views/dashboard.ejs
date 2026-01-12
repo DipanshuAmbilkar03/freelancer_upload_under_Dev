@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/css/newheader.css">
   <link rel="stylesheet" href="/css/profile.css">
   <link rel="stylesheet" href="/css/dashColor.css">
+  <link rel="stylesheet" href="/css/section.css">
   <style>
     .pdf-viewer {
       margin-top: 15px;
@@ -54,7 +55,7 @@
 
         <div class="header-right">
           <a href="/api/pdfUpload" class="btn">Upload</a>
-          <a href="/saved" class="btn">Saved</a>
+          <a href="/savedAssignmemt" class="btn">Saved</a>
           <a href="/post-assignment" class="btn btn-new-assignment">+ Post New</a>
 
           <div class="user-avatar-wrapper">
@@ -69,7 +70,7 @@
       </header>
 
       <main class="content profile-layout">
-        <section class="assignment-list">
+        <!-- <section class="assignment-list">
           <h3>My Assignments</h3>
           <% if (assignments.length === 0) { %>
             <p>No assignments posted yet.</p>
@@ -86,39 +87,48 @@
               </div>
             <% }) %>
           <% } %>
-        </section>
+        </section> -->
 
-        <section class="pdf-viewer-column">
-          <h3>PDF Preview</h3>
+        <section class="pdf-card-panel">
+          <h3>My PDFs</h3>
 
           <% 
-            // Find first assignment with PDFs
-            const firstAssignmentWithPdf = assignments.find(a => a.pdfs && a.pdfs.length > 0);
+            const pdfCards = [];
+            assignments.forEach(assignment => {
+              if (assignment.pdfs && assignment.pdfs.length > 0) {
+                assignment.pdfs.forEach(pdf => {
+                  pdfCards.push({
+                    title: assignment.title,
+                    file: pdf.file
+                  });
+                });
+              }
+            });
           %>
 
-          <% if (firstAssignmentWithPdf) { %>
-            <!-- Show first PDF -->
-            <iframe id="pdfFrame" src="<%= firstAssignmentWithPdf.pdfs[0].file.path %>" frameborder="0"></iframe>
-
-            <div class="pdf-list">
-              <% assignments.forEach(assignment => { %>
-                <% if (assignment.pdfs && assignment.pdfs.length > 0) { %>
-                  <% assignment.pdfs.forEach(pdf => { %>
-                    <a onclick="showPdf('<%= pdf.file.path %>')"><%= assignment.title %> - <%= pdf.file.filename %></a>
-                  <% }) %>
-                <% } %>
+          <% if (pdfCards.length > 0) { %>
+            <div class="pdf-card-list">
+              <% pdfCards.forEach(pdf => { %>
+                <div class="pdf-card" onclick="showPdf('<%= pdf.file.path %>')">
+                  <div class="pdf-icon">PDF</div>
+                  <div class="pdf-info">
+                    <h4><%= pdf.title %></h4>
+                    <p><%= pdf.file.filename %></p>
+                  </div>
+                </div>
               <% }) %>
             </div>
           <% } else { %>
-            <p>No PDFs uploaded yet.</p>
+            <p class="empty-text">No PDFs uploaded yet.</p>
           <% } %>
         </section>
 
-        <script>
+
+        <!-- <script>
           function showPdf(path) {
             document.getElementById('pdfFrame').src = path;
           }
-        </script>
+        </script> -->
 
   </main>
 
@@ -126,8 +136,14 @@
       <%- include('partials/footer') %>
 
     </div>
-
   </div>
+
+  <script>
+    function showPdf(path) {
+      document.getElementById("pdfFrame").src = path;
+    }
+  </script>
+
 
   <script>
     // Sidebar logic (keep existing)
