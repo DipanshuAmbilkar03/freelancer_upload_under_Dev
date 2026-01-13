@@ -4,42 +4,70 @@
   <meta charset="UTF-8">
   <title><%= assignment.title %> - Assignment Detail</title>
   <link rel="stylesheet" href="/css/detail.css">
+  <link rel="stylesheet" href="/css/details_bid.css">
 </head>
 <body>
-  <header class="custom-header">
-    <div class="header-left">
-      <div class="user-avatar">F</div>
-      <span class="logo">freelancer</span>
+  <header class="header">
+        <div class="logo" id="logo">
+            <span class="logo-circle">F</span>
+            <span class="logo-text">FREELANCE</span>
+        </div>
+        <div class="top-bar">
+            <div class="user-actions">
+                <button class="toggle-btn" id="toggleBtn">☰</button>
+                <a href="/dashboard">Profile</a>
+                <a href="/assignments">Dashboard</a>
+            </div>
+        </div>
+    </header>
+
+  <div class="page-wrapper">
+    <div class="assignment-layout">
+      <div class="card assignment-card">
+        <h2 class="card-title">
+          <%= assignment.title %>
+          <span class="status <%= assignment.status.toLowerCase() %>">
+            <%= assignment.status %>
+          </span>
+        </h2>
+        <p class="card-subtitle">
+          <%= assignment.category || 'General' %> • <%= assignment.subject || 'N/A' %>
+        </p>
+
+        <img 
+          class="card-img"
+          src="<%= (typeof assignment.image === 'string') 
+                ? assignment.image 
+                : (assignment.image && assignment.image.path ? assignment.image.path : 'https://via.placeholder.com/400x360') %>" 
+          alt="assignment image">
+
+        <div class="meta-grid">
+          <div><strong>Budget</strong><span>₹<%= assignment.startingPrice %></span></div>
+          <div><strong>Deadline</strong><span><%= assignment.deadline ? assignment.deadline.toLocaleDateString() : 'N/A' %></span></div>
+          <div><strong>Posted By</strong><span><%= assignment.postedBy.username %></span></div>
+        </div>
+
+        <div class="description">
+          <strong>Description</strong>
+          <p><%= assignment.description %></p>
+        </div>
+      </div>
+
+      <div class="card bid-card">
+        <h3 class="bid-title">Place Your Bid</h3>
+        <form action="/bids/<%= assignment._id %>" method="POST">
+          <label>Bid Amount (₹)</label>
+          <input type="number" name="amount" required min="1">
+          <label>Delivery Time (Days)</label>
+          <input type="number" name="deliveryDays" required min="1">
+          <label>Proposal Message</label>
+          <textarea name="proposal" rows="4" required></textarea>
+          <button type="submit" class="btn-primary">Submit Bid</button>
+        </form>
+      </div>
     </div>
-
-    <div class="header-right">
-      <a href="/profile" class="btn black-btn">Profile</a>
-      <a href="/logout" class="btn black-btn">Logout</a>
-    </div>
-  </header>
-
-  <div class="container">
-    <h2>
-      <%= assignment.title %>
-      <span class="status <%= assignment.status.toLowerCase() %>">
-        <%= assignment.status %>
-      </span>
-    </h2>
-
-    <img 
-      class="card-img" 
-      src="<%= (typeof assignment.image === 'string') 
-              ? assignment.image 
-              : (assignment.image && assignment.image.path ? assignment.image.path : 'https://via.placeholder.com/400x360') %>" 
-      alt="assignment image">
-
-    <p><strong>Description:</strong> <%= assignment.description %></p>
-    <p><strong>Starting Price:</strong> Rs.<%= assignment.startingPrice %></p>
-    <p><strong>Subject:</strong> <%= assignment.subject || 'N/A' %></p>
-    <p><strong>Category:</strong> <%= assignment.category || 'N/A' %></p>
-    <p><strong>Deadline:</strong> <%= assignment.deadline ? assignment.deadline.toLocaleDateString() : 'N/A' %></p>
-    <p><strong>Posted By:</strong> <%= assignment.postedBy.username %></p>
   </div>
+
 
   <hr>
 
