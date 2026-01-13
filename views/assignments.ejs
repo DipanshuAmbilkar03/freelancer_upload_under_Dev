@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Assignments - Freelancer Bidding Site</title>
     <link rel="stylesheet" href="/css/assignments.css">
     <link rel="stylesheet" href="/css/assignments2.css">
     <script src="/js/dashboard.js" defer></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
 <body>
     <header class="header">
         <div class="logo" id="logo">
@@ -42,76 +46,91 @@
         <h1>Assignments</h1>
         <h2>Available Assignments</h2>
         <div class="grid">
-        <% if (!assignments || assignments.length === 0) { %>
-            <p>No assignments available.</p>
-        <% } else { %>
-            <% assignments.forEach(a => { %>
-                <div class="card horizontal-card">
-                    <div class="avatar-section">
-                        <img
-                            src="<%= a.postedBy?.avatar || '/assets/pfp.png' %>"
-                            alt="User Avatar"
-                            class="avatar"
-                        />
-                        <span class="username">
-                            <%= a.postedBy?.username || 'Deleted User' %>
-                        </span>
-                    </div>
-                
-                    <div class="content-section">
-                        <h3 class="card-title">
-                            <a href="/assignments/<%= a._id %>"><%= a.title %></a>
-                        </h3>
-                    
-                        <p class="card-desc">
-                            <%= a.description?.length > 100
-                                ? a.description.slice(0,100) + '...'
-                                : a.description %>
-                        </p>
-                    
-                        <div class="meta">
-                            <span><strong>Subject:</strong> <%= a.subject || 'N/A' %></span>
-                            <span><strong>Category:</strong> <%= a.category || 'N/A' %></span>
-                        </div>
+            <% if (!assignments || assignments.length===0) { %>
+                <p>No assignments available.</p>
+                <% } else { %>
+                    <% assignments.forEach(a=> { %>
+                        <div class="card horizontal-card">
+                            <div class="avatar-section">
+                                <img src="<%= a.postedBy?.avatar || '/assets/pfp.png' %>" alt="User Avatar"
+                                    class="avatar" />
+                                <span class="username">
+                                    <%= a.postedBy?.username || 'Deleted User' %>
+                                </span>
+                            </div>
 
-                        <div class="extra-meta">
-                            <span class="status open">
-                                <i class="fa-solid fa-circle"></i> <%= a.status %>
-                            </span>
-                        
-                            <span class="deadline">
-                                <i class="fa-regular fa-clock"></i>
-                                <%= a.deadline ? a.deadline : 'No deadline' %>
-                            </span>
-                        
-                            <span class="bids">
-                                <i class="fa-solid fa-gavel"></i>
-                                <%= a.bidCount || 0 %> bids
-                            </span>
+                            <div class="content-section">
+                                <h3 class="card-title">
+                                    <a href="/assignments/<%= a._id %>">
+                                        <%= a.title %>
+                                    </a>
+                                </h3>
+
+                                <p class="card-desc">
+                                    <%= a.description?.length> 100
+                                        ? a.description.slice(0,100) + '...'
+                                        : a.description %>
+                                </p>
+
+                                <div class="meta">
+                                    <span><strong>Subject:</strong>
+                                        <%= a.subject || 'N/A' %>
+                                    </span>
+                                    <span><strong>Category:</strong>
+                                        <%= a.category || 'N/A' %>
+                                    </span>
+                                </div>
+
+                                <div class="extra-meta">
+                                    <span class="status open">
+                                        <i class="fa-solid fa-circle"></i>
+                                        <%= a.status %>
+                                    </span>
+
+                                    <span class="deadline">
+                                        <i class="fa-regular fa-clock"></i>
+                                        <%= a.deadline ? a.deadline : 'No deadline' %>
+                                    </span>
+
+                                    <span class="bids">
+                                        <i class="fa-solid fa-gavel"></i>
+                                        <%= a.bidCount || 0 %> bids
+                                    </span>
+                                </div>
+
+                            </div>
+
+                            <div class="price-section">
+                                <div>
+                                    <div class="price">₹ <%= a.startingPrice %>
+                                    </div>
+                                    <div><small>Starting Price</small></div>
+                                </div>
+
+                                <div class="saved">
+                                    <%
+                                    const isSaved =
+                                        user &&
+                                        Array.isArray(user.savedAssignments) &&
+                                        user.savedAssignments.some(
+                                            id => id.toString() === a._id.toString()
+                                        );
+                                    %>
+                                    
+                                    <button class="bookmark-btn <%= isSaved ? 'active' : '' %>" data-id="<%= a._id %>">
+                                        <i class="fa-regular fa-bookmark"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+
                         </div>
-    
-                    </div>
-                
-                    <div class="price-section">
-                        <div>
-                            <div class="price">₹ <%= a.startingPrice %></div>
-                            <!-- <small>Starting Price</small> -->
-                            <div ><small>Starting Price</small></div>
-                        </div>
-                        <div class="saved"><a class="saved" href="/assignments/<%=a.id_%>"><i class="fa-regular fa-bookmark"></i></a></div>
-                        <!-- <div>
-                            <span class="status review">In Review</span>
-                            <span class="status closed">Closed</span>
-                        </div> -->
-                    </div>
-                
-                </div>
-            <% }) %>
-        <% } %>
+                        <% }) %>
+                            <% } %>
         </div>
 
         <footer>
-        <p>&copy; 2025 Freelancer Bidding Site. All rights reserved.</p>
+            <p>&copy; 2025 Freelancer Bidding Site. All rights reserved.</p>
         </footer>
     </div>
 
@@ -127,7 +146,29 @@
                 sidebar.classList.toggle('collapsed');
                 header.classList.toggle('collapsed');
             }
+        });
+
+        document.querySelectorAll(".bookmark-btn").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            console.log("BOOKMARK CLICKED", btn.dataset.id);
+
+            const assignmentId = btn.dataset.id;
+
+            const res = await fetch(`/assignments/${assignmentId}/save`, {
+            method: "POST",
+            credentials: "same-origin"
             });
+
+            console.log("RESPONSE STATUS:", res.status);
+
+            const text = await res.text();
+            console.log("RESPONSE BODY:", text);
+        });
+    });
+
     </script>
 </body>
+
 </html>
