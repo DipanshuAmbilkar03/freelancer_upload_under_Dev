@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Post Assignment</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/upload.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,6 +25,9 @@
         }
         div.form-group {
             margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            /* flex: wrap; */
         }
         label {
             display: block;
@@ -78,7 +81,10 @@
             <label for="assignmentId">Select Assignment:</label>
             <select name="assignmentId" required>
                 <% assignments.forEach(a => { %>
-                    <option value="<%= a._id %>"><%= a.title %></option>
+                    <option value="<%= a._id %>" title="<%= a.title %>">
+                        <%= a.title.length > 100 ? a.title.slice(0, 100) + "..." : a.title %>
+                    </option>
+
                 <% }) %>
             </select>
         </div>
