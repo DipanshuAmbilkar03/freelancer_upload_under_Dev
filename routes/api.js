@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../model/user');  
 const Assignment = require('../model/assignment');
 const AssignmentPDF = require('../model/assignmentPdf');
-const Bid = require('../model/bid');
+// const savedUser = require("../model/savedAssignments");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const ensureAuthenticated = require('../middleware/post_auth');
@@ -93,7 +93,7 @@ router.post('/users/login', async (req, res) => {
         const acceptsHtml = req.headers.accept && req.headers.accept.includes('text/html');
         if (acceptsHtml || createSession) {
               req.session.user = {
-              id: user._id,
+              _id: user._id,
               username: user.username,
               avatar: user.avatar
             };
@@ -112,44 +112,39 @@ router.get("/session-check", (req, res) => {
   res.json(req.session);
 });
 
-// New: convert token -> session (useful when your client receives token first)
-// router.post('/session-from-token', (req, res) => {
-//     const { token } = req.body;
-//     if (!token) return res.status(400).json({ error: 'token required' });
-//     try {
-//         const payload = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
-//         req.session.user = { userId: payload.userId, username: payload.username, role: payload.role };
-//         return res.json({ message: 'Session created' });
-//     } catch (err) {
-//         return res.status(401).json({ error: 'Invalid token' });
-//     }
-// });
+// Update an existing assignment
+router.put('/assignments/update/:id', ensureAuthenticated, async (req, res) => {
+    try {
+        const { title, description, startingPrice, subject, deadline, category } = req.body;
+        
+        // Find the assignment and ensure the user owns it
+        const assignment = await Assignment.findOne({ _id: req.params.id, postedBy: req.user._id });
 
-// Create assignment
-// router.post('/assignments', ensureAuthenticated, async (req, res) => {
-//     const { title, description, startingPrice, image, subject, deadline, category } = req.body;
-//     try {
-//         const assignment = new Assignment({
-//             title,
-//             description,
-//             startingPrice,
-//             image,
-//             subject,
-//             deadline: deadline ? new Date(deadline) : undefined,
-//             category,
-//             postedBy: req.user.userId  
-//         });
-//         await assignment.save();
-//         res.status(201).json({ message: 'Assignment created successfully', assignment });
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// });
+        if (!assignment) {
+            return res.status(404).json({ success: false, message: "Assignment not found or unauthorized" });
+        }
+
+        // Update fields
+        assignment.title = title || assignment.title;
+        assignment.description = description || assignment.description;
+        assignment.startingPrice = startingPrice || assignment.startingPrice;
+        assignment.subject = subject || assignment.subject;
+        assignment.deadline = deadline || assignment.deadline;
+        assignment.category = category || assignment.category;
+
+        await assignment.save();
+        res.json({ success: true, message: "Assignment updated successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 
 router.post('/assignments', ensureAuthenticated, upload.single('image'), async (req, res) => {
   try {
     const { title, description, startingPrice, subject, deadline, category } = req.body;
-    const userId = req.user.userId;
+    const userId = req.user._id;
 
     // Multer stores uploaded file in req.file
     if (!req.file) {
@@ -183,7 +178,7 @@ router.post('/assignments', ensureAuthenticated, upload.single('image'), async (
 // PDF Upload Page
 router.get("/pdfUpload", ensureAuthenticated, async (req, res) => {
     try {
-        const userId = req.user.userId;
+        const userId = req.user._id;
         const assignments = await Assignment.find({ postedBy: userId });
 
         res.render('upload.ejs', { user: req.user, assignments });
@@ -192,11 +187,11 @@ router.get("/pdfUpload", ensureAuthenticated, async (req, res) => {
         res.status(500).send("Server error while loading upload page");
     }
     });
-    
+
 router.post('/pdfUpload', ensureAuthenticated, upload.single('image'), async (req, res) => {
   try {
     const { assignmentId } = req.body;
-    const userId = req.user.userId;
+    const userId = req.user._id;
 
     if (!req.file) {
       return res.status(400).send('No PDF uploaded');
@@ -232,38 +227,10 @@ router.post('/pdfUpload', ensureAuthenticated, upload.single('image'), async (re
   }
 });
 
-
-// Place a bid
-// router.post('/assignments/:id/bid', ensureAuthenticated, async (req, res) => {
-//     const { bidAmount, message } = req.body;
-//     if (bidAmount <= 0) {
-//         return res.status(400).json({ error: 'Bid amount must be greater than zero' });
-//     }
-//     try {
-//         const assignment = await Assignment.findById(req.params.id);
-//         if (!assignment || assignment.status === 'closed') {
-//             return res.status(404).json({ error: 'Assignment not found or bidding is closed' });
-//         }
-//         const bid = new Bid({
-//             assignment: assignment._id,
-//             bidder: req.user.userId,  // now defined
-//             bidAmount,
-//             message
-//         });
-//         await bid.save();
-//         assignment.bids.push(bid._id);
-//         await assignment.save();
-//         res.status(201).json({ message: 'Bid placed successfully', bid });
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// });
-
-
 // Get assignment details with bids
 router.get('/assignments/:id', async (req, res) => {
     try {
-        const assignment = await Assignment.findById(req.params.id).populate('postedBy', 'username').populate('bids');
+        const assignment = await Assignment.findById(req.params.id).populate('postedBy', 'username');
         if (!assignment) {
             return res.status(404).json({ error: 'Assignment not found' });
         }
