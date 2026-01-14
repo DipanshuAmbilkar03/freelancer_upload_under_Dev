@@ -24,16 +24,25 @@ router.get('/register', (req, res) => {
 // Dashboard route
 router.get('/dashboard', ensureAuthenticated, async (req, res) => {
     try {
-        const assignments = await Assignment.find({ postedBy: req.user.userId })
+        const assignments = await Assignment.find({ postedBy: req.user._id })
             .populate({
                 path: 'pdfs',
                 select: 'file uploadedBy',
             })
             .sort({ createdAt: -1 });
-            
+
+        const assignment = await Assignment.find({postedBy: req.user._id})
+            .populate('postedBy', 'username email')
+            .populate({
+                path: 'pdfs',
+                select: 'file uploadedBy',
+            });
+        if (!assignment) return res.status(404).send('Assignment not found');
+        
+
         // const pdfs = await assignmentpdfs.find({assignment: userId });
 
-        res.render('dashboard', { user: req.user, assignments });
+        res.render('dashboard', { user: req.user, assignments  });
     } catch (err) {
         console.error('Error fetching assignments:', err);
         res.status(500).send('Server error');
