@@ -55,7 +55,7 @@ async function loadAssignment(assignmentId) {
             const result = await response.json();
             if (result.success) {
                 alert("Assignment updated successfully!");
-                window.location.reload(); // Refresh to see changes in the list
+                window.location.reload(); 
             } else {
                 alert("Update failed: " + result.message);
             }
@@ -66,10 +66,9 @@ async function loadAssignment(assignmentId) {
     });
     
     function showPdf(path) {
-      document.getElementById("pdfFrame").src = path;
+        document.getElementById("pdfFrame").src = path;
     }
 
-    // Sidebar logic (keep existing)
     const menuToggle = document.getElementById('menuToggle');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.createElement('div');
@@ -77,16 +76,15 @@ async function loadAssignment(assignmentId) {
     document.body.appendChild(overlay);
 
     menuToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('sidebar-open');
-      overlay.classList.toggle('active');
+        sidebar.classList.toggle('sidebar-open');
+        overlay.classList.toggle('active');
     });
 
     overlay.addEventListener('click', () => {
-      sidebar.classList.remove('sidebar-open');
-      overlay.classList.remove('active');
+        sidebar.classList.remove('sidebar-open');
+        overlay.classList.remove('active');
     });
 
-    // -------- Avatar Hover Delay Logic --------
     const avatar = document.querySelector('.user-avatar');
     const avatarInfo = document.querySelector('.avatar-info');
 
@@ -94,20 +92,20 @@ async function loadAssignment(assignmentId) {
 
     // Show on hover
     avatar.addEventListener('mouseenter', () => {
-      clearTimeout(hideTimeout);
-      avatarInfo.classList.add('show');
+        clearTimeout(hideTimeout);
+        avatarInfo.classList.add('show');
     });
 
     // Keep open if hovering inside the dropdown
     avatarInfo.addEventListener('mouseenter', () => {
-      clearTimeout(hideTimeout);
+        clearTimeout(hideTimeout);
     });
 
     // Hide after small delay when mouse leaves
     avatar.addEventListener('mouseleave', () => {
-      hideTimeout = setTimeout(() => avatarInfo.classList.remove('show'), 250);
+        hideTimeout = setTimeout(() => avatarInfo.classList.remove('show'), 250);
     });
 
     avatarInfo.addEventListener('mouseleave', () => {
-      hideTimeout = setTimeout(() => avatarInfo.classList.remove('show'), 250);
+        hideTimeout = setTimeout(() => avatarInfo.classList.remove('show'), 250);
     });
