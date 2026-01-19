@@ -9,6 +9,7 @@ const jwt = require('jsonwebtoken');
 const ensureAuthenticated = require('../middleware/post_auth');
 const path = require('path');
 const fs = require('fs'); 
+const Bid = require("../model/bid.js")
 
 const multer = require('multer');
 const uploadDir = path.join(__dirname, '../uploads');
@@ -225,6 +226,43 @@ router.post('/pdfUpload', ensureAuthenticated, upload.single('image'), async (re
     console.error('PDF upload error:', error);
     res.status(500).send('Server error during PDF upload');
   }
+});
+
+router.post('/submit-bid/:assignmentId', async (req, res) => {
+    try {
+        const assignment = await Assignment.findById(req.params.assignmentId);
+        const { bidAmount, deliveryDate, proposalMessage } = req.body;
+
+        if (bidAmount <= 0) {
+            return res.status(400).send("Bid amount must be greater than 0.");
+        }
+        const selectedDate = new Date(deliveryDate);
+        const deadlineDate = new Date(assignment.deadline);
+
+        if (selectedDate > deadlineDate) {
+            return res.status(400).send("Delivery date cannot exceed the assignment deadline.");
+        }
+      const newBid = new Bid({
+            assignmentId: req.params.assignmentId,
+            bidderId: req.user._id, 
+            bidAmount,
+            deliveryDate,
+            proposalMessage
+        });
+
+        await newBid.save();
+        res.redirect(`/assignment/${req.params.assignmentId}`);
+    } catch (err) {
+        res.status(500).send("Server Error");
+    }
+});
+
+
+router.get('/assignment/:id', async (req, res) => {
+    const assignment = await Assignment.findById(req.params.id);
+    const bids = await Bid.find({ assignmentId: req.params.id }).populate('bidderId', 'username');
+    
+    res.render('assignmentdetails', { assignment, bids });
 });
 
 // Get assignment details with bids
