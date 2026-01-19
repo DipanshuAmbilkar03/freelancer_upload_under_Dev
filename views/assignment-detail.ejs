@@ -1,121 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title><%= assignment.title %> - Assignment Detail</title>
+  <title>
+    <%= assignment.title %> - Assignment Detail
+  </title>
   <link rel="stylesheet" href="/css/detail.css">
   <link rel="stylesheet" href="/css/details_bid.css">
 </head>
+
 <body>
   <header class="header">
-        <div class="logo" id="logo">
-            <span class="logo-circle">F</span>
-            <span class="logo-text">FREELANCE</span>
-        </div>
-        <div class="top-bar">
-            <div class="user-actions">
-                <button class="toggle-btn" id="toggleBtn">☰</button>
-                <a href="/dashboard">Profile</a>
-                <a href="/assignments">Dashboard</a>
-            </div>
-        </div>
-    </header>
+    <div class="logo" id="logo">
+      <span class="logo-circle">F</span>
+      <span class="logo-text">FREELANCE</span>
+    </div>
+    <div class="top-bar">
+      <div class="user-actions">
+        <button class="toggle-btn" id="toggleBtn">☰</button>
+        <a href="/dashboard">Profile</a>
+        <a href="/assignments">Dashboard</a>
+      </div>
+    </div>
+  </header>
 
   <div class="page-wrapper">
     <div class="assignment-layout">
       <div class="card assignment-card">
         <h2 class="card-title">
           <%= assignment.title %>
-          <span class="status <%= assignment.status.toLowerCase() %>">
-            <%= assignment.status %>
-          </span>
+            <span class="status <%= assignment.status.toLowerCase() %>">
+              <%= assignment.status %>
+            </span>
         </h2>
         <p class="card-subtitle">
           <%= assignment.category || 'General' %> • <%= assignment.subject || 'N/A' %>
         </p>
 
-        <img 
-          class="card-img"
+        <img class="card-img"
           src="<%= (typeof assignment.image === 'string') 
                 ? assignment.image 
-                : (assignment.image && assignment.image.path ? assignment.image.path : 'https://via.placeholder.com/400x360') %>" 
+                : (assignment.image && assignment.image.path ? assignment.image.path : 'https://via.placeholder.com/400x360') %>"
           alt="assignment image">
 
         <div class="meta-grid">
           <div><strong>Budget</strong><span>₹<%= assignment.startingPrice %></span></div>
-          <div><strong>Deadline</strong><span><%= assignment.deadline ? assignment.deadline.toLocaleDateString() : 'N/A' %></span></div>
-          <div><strong>Posted By</strong><span><%= assignment.postedBy.username %></span></div>
+          <div><strong>Deadline</strong><span>
+              <%= assignment.deadline ? assignment.deadline.toLocaleDateString() : 'N/A' %>
+            </span></div>
+          <div><strong>Posted By</strong><span>
+              <%= assignment.postedBy.username %>
+            </span></div>
         </div>
 
         <div class="description">
           <strong>Description</strong>
-          <p><%= assignment.description %></p>
+          <p>
+            <%= assignment.description %>
+          </p>
         </div>
       </div>
 
       <div class="card bid-card">
         <h3 class="bid-title">Place Your Bid</h3>
-        <form action="/bids/<%= assignment._id %>" method="POST">
+        <form action="/assignments/<%= assignment._id %>/bid" method="POST">
           <label>Bid Amount (₹)</label>
-          <input type="number" name="amount" required min="1">
-          <label>Delivery Time (Days)</label>
-          <input type="number" name="deliveryDays" required min="1">
+          <input type="number" name="bidAmount" required min="1" value="<%= assignment.budget %>">
+
+          <label>Delivery Date</label>
+          <input type="date" name="deliveryTime" id="deliveryTime" min="<%= new Date().toISOString().split('T')[0] %>"
+            max="<%= new Date(assignment.deadline).toISOString().split('T')[0] %>" required>
+
           <label>Proposal Message</label>
-          <textarea name="proposal" rows="4" required></textarea>
+          <textarea name="proposalMessage" rows="4" required
+            placeholder="Describe why you are the best fit..."></textarea>
+
           <button type="submit" class="btn-primary">Submit Bid</button>
         </form>
       </div>
-    </div>
-  </div>
 
+      <hr>
 
-  <hr>
+      <h3>Attached PDFs</h3>
 
-<h3>Attached PDFs</h3>
+      <% if (assignment.pdfs && assignment.pdfs.length> 0) { %>
+        <div class="pdf-grid">
+          <% assignment.pdfs.forEach((pdf, index)=> { %>
+            <div class="pdf-thumb" onclick="openPdfModal('<%= pdf.file.path %>')">
+              <iframe src="<%= pdf.file.path %>" frameborder="0"></iframe>
+              <p><strong>
+                  <%= pdf.file.filename %>
+                </strong></p>
+            </div>
+            <% }) %>
+        </div>
 
-<% if (assignment.pdfs && assignment.pdfs.length > 0) { %>
-  <div class="pdf-grid">
-    <% assignment.pdfs.forEach((pdf, index) => { %>
-      <div class="pdf-thumb" onclick="openPdfModal('<%= pdf.file.path %>')">
-        <iframe src="<%= pdf.file.path %>" frameborder="0"></iframe>
-        <p><strong><%= pdf.file.filename %></strong></p>
-      </div>
-    <% }) %>
-  </div>
+        <div id="pdfModal" class="pdf-modal">
+          <span class="close-btn" onclick="closePdfModal()">&times;</span>
+          <iframe id="pdfViewer" src="" frameborder="0"></iframe>
+        </div>
 
-  <!-- PDF Modal -->
-  <div id="pdfModal" class="pdf-modal">
-    <span class="close-btn" onclick="closePdfModal()">&times;</span>
-    <iframe id="pdfViewer" src="" frameborder="0"></iframe>
-  </div>
+        <% } else { %>
+          <p>No PDFs uploaded for this assignment.</p>
+          <% } %>
 
-<% } else { %>
-  <p>No PDFs uploaded for this assignment.</p>
-<% } %>
+            <div class="bids-list-container">
+    <h3>Active Bids</h3>
+    <table class="bid-table">
+        <thead>
+            <tr>
+                <th>Bidder</th>
+                <th>Amount</th>
+                <th>Delivery Date</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (bids && bids.length > 0) { %>
+                <% bids.forEach(bid => { %>
+                    <tr>
+                        <td><%= bid.bidderId ? bid.bidderId.username : 'Anonymous' %></td>
+                        <td class="text-green">₹<%= bid.bidAmount %></td>
+                        <td><%= new Date(bid.deliveryDate).toLocaleDateString() %></td>
+                        <td><%= bid.proposalMessage %></td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="4">No bids placed yet. Be the first!</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
 
-<script>
-  function openPdfModal(path) {
-    const modal = document.getElementById("pdfModal");
-    const viewer = document.getElementById("pdfViewer");
-    viewer.src = path;
-    modal.style.display = "flex";
-    document.body.style.overflow = "hidden";
-  }
+            <script src="/js/assDetail_js.js"></script>
 
-  function closePdfModal() {
-    const modal = document.getElementById("pdfModal");
-    const viewer = document.getElementById("pdfViewer");
-    viewer.src = "";
-    modal.style.display = "none";
-    document.body.style.overflow = "auto";
-  }
+</body>
 
-  // Optional: Close modal by clicking outside
-  window.addEventListener("click", function(e) {
-    const modal = document.getElementById("pdfModal");
-    if (e.target === modal) closePdfModal();
-  });
-</script>
-
-  </body>
 </html>
