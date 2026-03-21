@@ -55,6 +55,9 @@
     font-size: 1.2rem;
     font-weight: 600;
     text-decoration: none;
+    display: inline-block;  
+    position: relative;
+    z-index: 1;
   }
   
   .card-title a:hover {
@@ -79,6 +82,7 @@
 /* RIGHT SECTION – PRICE AREA */
 .price-section {
   position: relative;
+  z-index: 10;
   flex: 0 0 140px;
   min-width: 160px;
   display: flex;
@@ -91,16 +95,35 @@
 }
 
 /* Bookmark on the right side */
-.price-section a.saved {
+.price-section .saved {
   position: absolute;
   right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 1.1rem;
-  color: #bdbdbd;
-  cursor: pointer;
-  transition: color 0.2s ease;
+  /* font-size: 1.1rem; */
+  /* color: #bdbdbd; */
+  /* cursor: pointer;*/
+  z-index: 20;
+  /* transition: color 0.2s ease; */
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
 }
+
+.saved {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;            
+  pointer-events: auto;
+}
+
+.bookmark-btn {
+  pointer-events: auto;
+  z-index: 21;
+}
+
 
 .price-section .saved:hover {
   color: #1abc9c;
@@ -202,6 +225,34 @@
 
 .bids {
   color: #9e9e9e;
+}
+
+.bookmark-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  pointer-events: auto;
+  margin: 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 1.1rem;
+  color: #bdbdbd;
+  z-index: 21;
+}
+
+.bookmark-btn.active {
+  color: #1abc9c;
+}
+
+.content-section {
+  pointer-events: auto;
+}
+
+.content-section a {
+  pointer-events: auto;
 }
 
 

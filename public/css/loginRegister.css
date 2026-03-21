@@ -8,8 +8,17 @@
 }
 
 body{
-    background-color: #e2e2e2;
-    background: linear-gradient(to right, #f0f0f0, #c9d6ff);
+    /* background-color: #e2e2e2; */
+        /* background: url() no-repeat center center/cover; */
+        background:
+                linear-gradient(
+                    rgba(0,0,0,0.55),
+                    rgba(0,0,0,0.55)
+                ),
+                url("https://images.unsplash.com/photo-1512820790803-83ca734da794")
+                no-repeat center / cover;
+
+    /* background: linear-gradient(to right, #f0f0f0, #c9d6ff); */
     display: flex;
     align-items: center;
     justify-content: center;

@@ -77,6 +77,37 @@ router.post('/users/register', upload.single('avatar'), async (req, res) => {
 });
 
 
+// saved assignments 
+router.post(
+  '/assignments/:id/save',
+  ensureAuthenticated,
+  async (req, res) => {
+    try {
+      const user = await User.findById(req.user._id);
+      const assignmentId = req.params.id;
+
+      console.log("SAVE ROUTE HIT", req.params.id);
+      
+      const exists = user.savedAssignments.some(
+        id => id.toString() === assignmentId
+      );
+
+      if (exists) {
+        user.savedAssignments.pull(assignmentId);
+      } else {
+        user.savedAssignments.push(assignmentId);
+      }
+
+      await user.save();
+
+      res.json({ success: true, saved: !exists });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ success: false });
+    }
+  }
+);
+
 // User login
 
 // Update login: allow creating a server session when requested

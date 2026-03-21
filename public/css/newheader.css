@@ -117,6 +117,8 @@ h3 {
 .header-right {
   display: flex;
   align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .header-right .btn {
@@ -269,5 +271,98 @@ footer {
 
   .column {
     margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 667px) {
+  .header-right .btn {
+    padding: 6px 8px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .user-avatar {
+    display: None;
+  }
+
+  .btn-new-assignment {
+    font-size: 12px;
+  }
+}
+
+/* ================= MOBILE FIX ================= */
+@media (max-width: 620px) {
+
+  /* Stop desktop flex behavior */
+  .page-wrapper {
+    display: block;
+  }
+
+  /* Remove large desktop padding */
+  .content {
+    padding: 12px;
+  }
+
+  /* Stack header properly */
+  .custom-header {
+    flex-direction: row;
+    padding: 10px 12px;
+  }
+
+  .header-right {
+    gap: 4px;
+  }
+
+  /* Compact buttons */
+  .header-right .btn {
+    padding: 6px 8px;
+    font-size: 12px;
+    margin-left: 0;
+  }
+
+  /* Hide avatar (already doing this, fixing typo) */
+  .user-avatar {
+    display: none;
+  }
+
+  /* Panels should be full-width */
+  .editor-layout {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .pdf-card-panel,
+  .assignment-editor {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+/* ================= MOBILE HEADER FIX ================= */
+@media (max-width: 580px) {
+
+  /* Hide header action buttons */
+  .header-right .btn {
+    display: none;
+  }
+
+  /* Optional: hide avatar on mobile */
+  .user-avatar-wrapper {
+    display: none;
+  }
+
+  /* Show mobile-only sidebar items */
+  .sidebar .mobile-only {
+    display: block;
+  }
+}
+
+/* Desktop default */
+.sidebar .mobile-only {
+  display: none;
+}
+@media (max-width: 580px) {
+  .sidebar ul li a {
+    padding: 14px 20px;
+    font-size: 15px;
   }
 }

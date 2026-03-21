@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Assignments</title>
+</head>
+
+<body>
+    <div class="main">
+        <h1>Saved Assignments</h1>
+
+        <div class="grid">
+            <% if (!assignments || assignments.length===0) { %>
+                <p>No saved assignments.</p>
+                <% } else { %>
+                    <% assignments.forEach(a=> { %>
+                        <div class="card horizontal-card">
+                            <!-- SAME CARD CODE AS assignments.ejs -->
+                            <!-- No changes needed -->
+                        </div>
+                <% }) %>
+            <% } %>
+        </div>
+    </div>
+
+</body>
+
+</html>

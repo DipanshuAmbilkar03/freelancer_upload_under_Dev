@@ -3,33 +3,14 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>User Dashboard</title>
   <!-- <link rel="stylesheet" href="/css/style.css"> -->
   <link rel="stylesheet" href="/css/newheader.css">
   <link rel="stylesheet" href="/css/profile.css">
   <link rel="stylesheet" href="/css/dashColor.css">
   <link rel="stylesheet" href="/css/section.css">
-  <style>
-    .pdf-viewer {
-      margin-top: 15px;
-    }
-    .pdf-viewer iframe {
-      width: 100%;
-      height: 500px;
-      border: 1px solid #ccc;
-    }
-    .pdf-list {
-      margin-top: 10px;
-    }
-    .pdf-list a {
-      display: block;
-      margin: 5px 0;
-      color: #007bff;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/dashboardmainContent.css">
 </head>
 
 <body>
@@ -42,8 +23,13 @@
         <li><a href="/assignments">Assignments</a></li>
         <li><a href="/saved">Saved Documents</a></li>
         <li><a href="/profile">Profile</a></li>
+
+        <li class="mobile-only"><a href="/api/pdfUpload">Upload</a></li>
+        <li class="mobile-only"><a href="/savedAssignmemt">Saved</a></li>
+        <li class="mobile-only"><a href="/post-assignment">+ Post New</a></li>
       </ul>
     </aside>
+
 
     <div class="main-content">
 
@@ -56,12 +42,16 @@
         <div class="header-right">
           <a href="/api/pdfUpload" class="btn">Upload</a>
           <a href="/savedAssignmemt" class="btn">Saved</a>
-          <a href="/post-assignment" class="btn btn-new-assignment">+ Post New</a>
+          <a href="/post-assignment" class="btn">+ Post New</a>
 
           <div class="user-avatar-wrapper">
-            <div class="user-avatar"><%= user.username[0].toUpperCase() %></div>
+            <div class="user-avatar">
+              <%= user.username[0].toUpperCase() %>
+            </div>
             <div class="avatar-info">
-              <p><strong>Username:</strong> <%= user.username %></p>
+              <p><strong>Username:</strong>
+                <%= user.username %>
+              </p>
               <p><a href="/profile">View Account</a></p>
               <p><a href="/logout">Sign Out</a></p>
             </div>
@@ -70,127 +60,79 @@
       </header>
 
       <main class="content profile-layout">
-        <!-- <section class="assignment-list">
-          <h3>My Assignments</h3>
-          <% if (assignments.length === 0) { %>
-            <p>No assignments posted yet.</p>
-          <% } else { %>
-            <% assignments.forEach(assignment => { %>
-              <div class="assignment-card">
-                <h4><%= assignment.title %></h4>
-                <p><%= assignment.description.slice(0, 150) %>...</p>
-                <a href="/assignments/<%= assignment._id %>" class="read-more">Full description</a>
-                <p class="uploaded-by">
-                  Uploaded by <strong><%= assignment.postedBy?.username%></strong> 
-                  on <%= new Date(assignment.createdAt).toLocaleDateString() %>
-                </p>
-              </div>
-            <% }) %>
-          <% } %>
-        </section> -->
 
-        <section class="pdf-card-panel">
-          <h3>My PDFs</h3>
+        <div class="editor-layout">
 
-          <% 
-            const pdfCards = [];
-            assignments.forEach(assignment => {
-              if (assignment.pdfs && assignment.pdfs.length > 0) {
-                assignment.pdfs.forEach(pdf => {
-                  pdfCards.push({
-                    title: assignment.title,
-                    file: pdf.file
-                  });
-                });
-              }
+          <% const pdfCards=[]; assignments.forEach(assignment=> {
+            if (assignment.pdfs && assignment.pdfs.length > 0) {
+            assignment.pdfs.forEach(pdf => {
+            pdfCards.push({
+            assignmentId: assignment._id,
+            title: assignment.title,
+            file: pdf.file
             });
-          %>
+            });
+            }
+            });
+            %>
 
-          <% if (pdfCards.length > 0) { %>
-            <div class="pdf-card-list">
-              <% pdfCards.forEach(pdf => { %>
-                <div class="pdf-card" onclick="showPdf('<%= pdf.file.path %>')">
-                  <div class="pdf-icon">PDF</div>
-                  <div class="pdf-info">
-                    <h4><%= pdf.title %></h4>
-                    <p><%= pdf.file.filename %></p>
-                  </div>
+            <section class="pdf-card-panel">
+              <h3>My PDFs</h3>
+
+              <% if (pdfCards.length> 0) { %>
+                <div class="pdf-card-list">
+                  <% pdfCards.forEach(pdf=> { %>
+                    <div class="pdf-card" onclick="loadAssignment('<%= pdf.assignmentId %>')">
+                      <div class="pdf-icon">PDF</div>
+                      <div class="pdf-info">
+                        <h4>
+                          <%= pdf.title.length> 50 ? pdf.title.slice(0,50) + "..." : pdf.title %>
+                        </h4>
+                        <p>
+                          <%= pdf.file.filename %>
+                        </p>
+                      </div>
+                    </div>
+                    <% }) %>
                 </div>
-              <% }) %>
-            </div>
-          <% } else { %>
-            <p class="empty-text">No PDFs uploaded yet.</p>
-          <% } %>
-        </section>
+                <% } else { %>
+                  <p class="empty-text">No PDFs uploaded yet.</p>
+                  <% } %>
+            </section>
 
+            <section class="assignment-editor">
+              <h3>Edit Assignment</h3>
 
-        <!-- <script>
-          function showPdf(path) {
-            document.getElementById('pdfFrame').src = path;
-          }
-        </script> -->
+              <form id="editAssignmentForm">
+                <label>Title</label>
+                <input type="text" id="title" />
 
-  </main>
+                <label>Description</label>
+                <textarea id="description"></textarea>
 
+                <label>Starting Price</label>
+                <input type="number" id="price" />
 
+                <label>Subject</label>
+                <input type="text" id="subject" />
+
+                <label>Deadline</label>
+                <input type="date" id="deadline" />
+
+                <label>Category</label>
+                <input type="text" id="category" />
+
+                <button type="submit">Update Assignment</button>
+              </form>
+            </section>
+
+        </div>
+
+      </main>
       <%- include('partials/footer') %>
-
     </div>
   </div>
 
-  <script>
-    function showPdf(path) {
-      document.getElementById("pdfFrame").src = path;
-    }
-  </script>
-
-
-  <script>
-    // Sidebar logic (keep existing)
-    const menuToggle = document.getElementById('menuToggle');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.createElement('div');
-    overlay.classList.add('overlay');
-    document.body.appendChild(overlay);
-
-    menuToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('sidebar-open');
-      overlay.classList.toggle('active');
-    });
-
-    overlay.addEventListener('click', () => {
-      sidebar.classList.remove('sidebar-open');
-      overlay.classList.remove('active');
-    });
-
-    // -------- Avatar Hover Delay Logic --------
-    const avatar = document.querySelector('.user-avatar');
-    const avatarInfo = document.querySelector('.avatar-info');
-
-    let hideTimeout;
-
-    // Show on hover
-    avatar.addEventListener('mouseenter', () => {
-      clearTimeout(hideTimeout);
-      avatarInfo.classList.add('show');
-    });
-
-    // Keep open if hovering inside the dropdown
-    avatarInfo.addEventListener('mouseenter', () => {
-      clearTimeout(hideTimeout);
-    });
-
-    // Hide after small delay when mouse leaves
-    avatar.addEventListener('mouseleave', () => {
-      hideTimeout = setTimeout(() => avatarInfo.classList.remove('show'), 250);
-    });
-
-    avatarInfo.addEventListener('mouseleave', () => {
-      hideTimeout = setTimeout(() => avatarInfo.classList.remove('show'), 250);
-    });
-
-  </script>
-
+  <script src="/js/dashboard_edit_show.js"></script>
 </body>
-
 </html>

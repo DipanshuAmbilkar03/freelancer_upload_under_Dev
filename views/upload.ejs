@@ -81,12 +81,12 @@
             <label for="assignmentId">Select Assignment:</label>
             <select name="assignmentId" required>
                 <% assignments.forEach(a => { %>
-                    <option value="<%= a._id %>" title="<%= a.title %>">
-                        <%= a.title.length > 100 ? a.title.slice(0, 100) + "..." : a.title %>
+                    <option value="<%= a._id %>">
+                    <%= a.title.length > 40 ? a.title.slice(0, 40) + "…" : a.title %>
                     </option>
-
                 <% }) %>
             </select>
+
         </div>
 
         <div class="form-group">
