@@ -4,135 +4,187 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>User Dashboard</title>
-  <!-- <link rel="stylesheet" href="/css/style.css"> -->
+  <title>User Dashboard - Freelancer Bidding</title>
   <link rel="stylesheet" href="/css/newheader.css">
-  <link rel="stylesheet" href="/css/profile.css">
-  <link rel="stylesheet" href="/css/dashColor.css">
-  <link rel="stylesheet" href="/css/section.css">
-  <link rel="stylesheet" href="/css/dashboardmainContent.css">
+  <link rel="stylesheet" href="/css/dashboard-redesign.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
 
   <div class="page-wrapper">
 
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
-      <ul>
-        <li><a href="/dashboard">Dashboard</a></li>
-        <li><a href="/assignments">Assignments</a></li>
-        <li><a href="/saved">Saved Documents</a></li>
-        <li><a href="/profile">Profile</a></li>
-
-        <li class="mobile-only"><a href="/api/pdfUpload">Upload</a></li>
-        <li class="mobile-only"><a href="/savedAssignmemt">Saved</a></li>
-        <li class="mobile-only"><a href="/post-assignment">+ Post New</a></li>
-      </ul>
+      <div class="sidebar-header">
+        <h2 class="logo">FREELANCE</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/dashboard" class="nav-link active">
+          <i class="fas fa-house"></i> Home
+        </a>
+        <a href="/assignments" class="nav-link">
+          <i class="fas fa-tasks"></i> Assignments
+        </a>
+        <a href="/post-assignment" class="nav-link">
+          <i class="fas fa-briefcase"></i> Projects
+        </a>
+        <a href="/saved" class="nav-link">
+          <i class="fas fa-gavel"></i> My Bids
+        </a>
+        <a href="/profile" class="nav-link">
+          <i class="fas fa-user"></i> Profile
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="/logout" class="nav-link logout">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
     </aside>
 
 
+    <!-- MAIN CONTENT -->
     <div class="main-content">
 
+      <!-- HEADER -->
       <header class="custom-header">
         <div class="header-left">
-          <button class="menu-toggle" id="menuToggle">☰</button>
-          <h1 class="logo">FREELANCE</h1>
+          <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          <div class="brand-mark"><%= user.username[0].toUpperCase() %></div>
         </div>
 
         <div class="header-right">
-          <a href="/api/pdfUpload" class="btn">Upload</a>
-          <a href="/savedAssignmemt" class="btn">Saved</a>
-          <a href="/post-assignment" class="btn">+ Post New</a>
-
-          <div class="user-avatar-wrapper">
-            <div class="user-avatar">
-              <%= user.username[0].toUpperCase() %>
-            </div>
-            <div class="avatar-info">
-              <p><strong>Username:</strong>
-                <%= user.username %>
-              </p>
-              <p><a href="/profile">View Account</a></p>
-              <p><a href="/logout">Sign Out</a></p>
-            </div>
-          </div>
+          <a href="/profile" class="top-btn">Profile</a>
+          <a href="/logout" class="top-btn">Logout</a>
         </div>
       </header>
 
-      <main class="content profile-layout">
+      <!-- MAIN CONTENT AREA -->
+      <main class="dashboard-content">
+        <section class="page-title-wrap">
+          <h1>Assignments</h1>
+          <p>Available Assignments</p>
+        </section>
 
-        <div class="editor-layout">
+        <section class="assignments-section">
+          <div class="section-header">
+            <h2><i class="fas fa-folder-open"></i> Your Assignments (<%= assignments.length %>)</h2>
+          </div>
 
-          <% const pdfCards=[]; assignments.forEach(assignment=> {
-            if (assignment.pdfs && assignment.pdfs.length > 0) {
-            assignment.pdfs.forEach(pdf => {
-            pdfCards.push({
-            assignmentId: assignment._id,
-            title: assignment.title,
-            file: pdf.file
-            });
-            });
-            }
-            });
-            %>
-
-            <section class="pdf-card-panel">
-              <h3>My PDFs</h3>
-
-              <% if (pdfCards.length> 0) { %>
-                <div class="pdf-card-list">
-                  <% pdfCards.forEach(pdf=> { %>
-                    <div class="pdf-card" onclick="loadAssignment('<%= pdf.assignmentId %>')">
-                      <div class="pdf-icon">PDF</div>
-                      <div class="pdf-info">
-                        <h4>
-                          <%= pdf.title.length> 50 ? pdf.title.slice(0,50) + "..." : pdf.title %>
-                        </h4>
-                        <p>
-                          <%= pdf.file.filename %>
-                        </p>
+          <% if (assignments.length > 0) { %>
+            <div class="assignments-list">
+              <% assignments.forEach(a => { %>
+                <% const statusText = (a.status || 'open').toUpperCase(); %>
+                <% const bidderCount = a.bidsCount || (a.bids ? a.bids.length : 0); %>
+                <% const price = a.startingPrice || a.price || 0; %>
+                <% const authorName = a.username || (a.user && a.user.username) || user.username; %>
+                <% const hasImage = a.userImage || (a.user && a.user.avatar); %>
+                <article class="assignment-card" data-status="<%= statusText %>">
+                  <div class="card-left">
+                    <% if (hasImage) { %>
+                      <img src="<%= a.userImage || a.user.avatar %>" alt="User" class="user-image">
+                    <% } else { %>
+                      <div class="user-image user-fallback">
+                        <%= authorName[0].toUpperCase() %>
                       </div>
+                    <% } %>
+                    <p class="user-name"><%= authorName %></p>
+                  </div>
+
+                  <div class="card-middle">
+                    <h3 class="assignment-title"><%= a.title %></h3>
+                    <p class="assignment-description">
+                      <%= a.description
+                        ? (a.description.length > 160 ? a.description.slice(0, 160) + '...' : a.description)
+                        : 'No additional description provided for this assignment.' %>
+                    </p>
+
+                    <div class="meta-row">
+                      <span class="meta-pill"><i class="fas fa-book"></i> <%= a.subject || 'General' %></span>
+                      <span class="meta-pill"><i class="fas fa-layer-group"></i> <%= a.category || 'Uncategorized' %></span>
                     </div>
-                    <% }) %>
-                </div>
-                <% } else { %>
-                  <p class="empty-text">No PDFs uploaded yet.</p>
-                  <% } %>
-            </section>
 
-            <section class="assignment-editor">
-              <h3>Edit Assignment</h3>
+                    <div class="meta-bottom-row">
+                      <span class="status-pill <%= statusText === 'OPEN' ? 'is-open' : '' %>">
+                        <span class="dot"></span> <%= statusText %>
+                      </span>
+                      <span class="time-meta" title="Posted/Deadline time">
+                        <i class="fas fa-clock"></i>
+                        <%= new Date(a.deadline || a.createdAt).toLocaleString() %>
+                      </span>
+                      <span class="bids-meta">
+                        <i class="fas fa-gavel"></i> <%= bidderCount %> bids
+                      </span>
+                    </div>
+                  </div>
 
-              <form id="editAssignmentForm">
-                <label>Title</label>
-                <input type="text" id="title" />
-
-                <label>Description</label>
-                <textarea id="description"></textarea>
-
-                <label>Starting Price</label>
-                <input type="number" id="price" />
-
-                <label>Subject</label>
-                <input type="text" id="subject" />
-
-                <label>Deadline</label>
-                <input type="date" id="deadline" />
-
-                <label>Category</label>
-                <input type="text" id="category" />
-
-                <button type="submit">Update Assignment</button>
-              </form>
-            </section>
-
-        </div>
+                  <div class="card-right">
+                    <p class="price-label">Starting Price</p>
+                    <p class="price-value" title="Starting offer price">$<%= price %></p>
+                    <button class="bookmark-btn" type="button" title="Save assignment">
+                      <i class="far fa-bookmark"></i>
+                    </button>
+                    <div class="card-actions">
+                      <a href="/assignments/<%= a._id %>" class="btn btn-secondary btn-sm">
+                      <i class="fas fa-eye"></i> View
+                      </a>
+                      <a href="/edit/<%= a._id %>" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-edit"></i> Edit
+                      </a>
+                    </div>
+                  </div>
+                </article>
+              <% }); %>
+            </div>
+          <% } else { %>
+            <div class="empty-state">
+              <i class="fas fa-inbox"></i>
+              <h3>No Assignments Yet</h3>
+              <p>Start by uploading your first assignment above or <a href="/post-assignment">post a new one</a>.</p>
+            </div>
+          <% } %>
+        </section>
 
       </main>
-      <%- include('partials/footer') %>
+
+      <!-- FOOTER -->
+      <footer class="dashboard-footer">
+        <p>&copy; 2025 Freelancer Bidding Platform. All rights reserved.</p>
+      </footer>
     </div>
   </div>
 
-  <script src="/js/dashboard_edit_show.js"></script>
+  <!-- SIDEBAR TOGGLE SCRIPT -->
+  <script>
+    document.getElementById('menuToggle').addEventListener('click', function() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('show');
+    });
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', function(event) {
+      const sidebar = document.getElementById('sidebar');
+      const menuToggle = document.getElementById('menuToggle');
+      if (window.innerWidth <= 768 && 
+          !sidebar.contains(event.target) && 
+          !menuToggle.contains(event.target)) {
+        sidebar.classList.remove('show');
+      }
+    });
+
+    document.querySelectorAll('.bookmark-btn').forEach(function(button) {
+      button.addEventListener('click', function() {
+        this.classList.toggle('active');
+        const icon = this.querySelector('i');
+        icon.classList.toggle('far');
+        icon.classList.toggle('fas');
+      });
+    });
+  </script>
+
 </body>
+
 </html>

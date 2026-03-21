@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Assignment - Freelancer Bidding</title>
+  <link rel="stylesheet" href="/css/newheader.css">
+  <link rel="stylesheet" href="/css/dashboard-redesign.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .edit-page {
+      background: var(--dark-bg);
+      min-height: 100vh;
+    }
+
+    .edit-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary-color);
+      text-decoration: none;
+      margin-bottom: 20px;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .back-button:hover {
+      gap: 12px;
+    }
+
+    .edit-header {
+      margin-bottom: 30px;
+    }
+
+    .edit-header h1 {
+      margin: 0 0 5px 0;
+      color: var(--text-primary);
+    }
+
+    .edit-header p {
+      margin: 0;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+
+<body class="edit-page">
+
+  <div class="page-wrapper">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2 class="logo">FREELANCE</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/dashboard" class="nav-link">
+          <i class="fas fa-chart-line"></i> Dashboard
+        </a>
+        <a href="/assignments" class="nav-link">
+          <i class="fas fa-tasks"></i> Assignments
+        </a>
+        <a href="/saved" class="nav-link">
+          <i class="fas fa-bookmark"></i> Saved
+        </a>
+        <a href="/profile" class="nav-link">
+          <i class="fas fa-user"></i> Profile
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="/logout" class="nav-link logout">
+          <i class="fas fa-sign-out-alt"></i> Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+      <!-- HEADER -->
+      <header class="custom-header">
+        <div class="header-left">
+          <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+
+        <div class="header-right">
+          <div class="user-avatar-wrapper">
+            <div class="user-avatar">
+              <div class="avatar-circle"><%= user.username[0].toUpperCase() %></div>
+              <div class="avatar-dropdown">
+                <p class="user-name"><strong><%= user.username %></strong></p>
+                <p class="user-email"><%= user.email %></p>
+                <hr>
+                <a href="/profile">View Account</a>
+                <a href="/logout">Sign Out</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- MAIN CONTENT AREA -->
+      <main class="dashboard-content">
+
+        <div class="edit-container">
+
+          <a href="/dashboard" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+          </a>
+
+          <div class="edit-header">
+            <h1><i class="fas fa-edit"></i> Edit Assignment</h1>
+            <p>Update your assignment details and files</p>
+          </div>
+
+          <% if (message) { %>
+            <div class="alert alert-<%= message.type %>">
+              <i class="fas fa-<%= message.type === 'success' ? 'check-circle' : 'exclamation-circle' %>"></i>
+              <%= message.text %>
+            </div>
+          <% } %>
+
+          <section class="upload-section" style="margin-bottom: 0;">
+            <form action="/edit/<%= assignment._id %>" method="POST" enctype="multipart/form-data" class="upload-form">
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="title">Assignment Title <span class="required">*</span></label>
+                  <input type="text" id="title" name="title" placeholder="Enter assignment title" 
+                         value="<%= assignment.title %>" required>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="description">Description</label>
+                  <textarea id="description" name="description" placeholder="Describe your assignment..." 
+                            rows="4"><%= assignment.description || '' %></textarea>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="subject">Subject</label>
+                  <input type="text" id="subject" name="subject" placeholder="e.g., Mathematics, Programming, Design" 
+                         value="<%= assignment.subject || '' %>">
+                </div>
+                <div class="form-group">
+                  <label for="category">Category</label>
+                  <input type="text" id="category" name="category" placeholder="e.g., Homework, Project, Research" 
+                         value="<%= assignment.category || '' %>">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="startingPrice">Starting Price <span class="required">*</span></label>
+                  <input type="number" id="startingPrice" name="startingPrice" placeholder="₹0.00" 
+                         min="0" step="0.01" value="<%= assignment.startingPrice %>" required>
+                </div>
+                <div class="form-group">
+                  <label for="deadline">Deadline</label>
+                  <input type="datetime-local" id="deadline" name="deadline"
+                         value="<%= assignment.deadline ? assignment.deadline.toISOString().slice(0, 16) : '' %>">
+                </div>
+              </div>
+
+              <% if (assignment.pdfs && assignment.pdfs.length > 0) { %>
+                <div class="form-group">
+                  <label>Current Files</label>
+                  <div class="current-files">
+                    <% assignment.pdfs.forEach(pdf => { %>
+                      <div class="current-file-item">
+                        <i class="fas fa-file-pdf"></i>
+                        <span><%= pdf.file.filename %></span>
+                      </div>
+                    <% }); %>
+                  </div>
+                  <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 10px;">
+                    Upload a new file below to replace the current file(s)
+                  </p>
+                </div>
+              <% } %>
+
+              <div class="form-group">
+                <label for="assignmentFile" class="file-label">
+                  <div class="file-input-wrapper">
+                    <i class="fas fa-file-upload"></i>
+                    <span><%= assignment.pdfs && assignment.pdfs.length > 0 ? 'Replace File' : 'Choose File' %></span>
+                  </div>
+                  <input type="file" id="assignmentFile" name="assignmentFile" 
+                         accept=".pdf,.doc,.docx,.txt,.jpg,.png,.jpeg" class="file-input">
+                </label>
+                <small class="file-hint">Max size: 10MB. Supported: PDF, DOC, DOCX, TXT, JPG, PNG</small>
+              </div>
+
+              <div style="display: flex; gap: 10px; margin-top: 25px;">
+                <button type="submit" class="btn btn-primary btn-upload">
+                  <i class="fas fa-save"></i> Save Changes
+                </button>
+                <a href="/dashboard" class="btn btn-secondary" style="justify-content: center;">
+                  <i class="fas fa-times"></i> Cancel
+                </a>
+              </div>
+            </form>
+          </section>
+
+        </div>
+
+      </main>
+
+      <!-- FOOTER -->
+      <footer class="dashboard-footer">
+        <p>&copy; 2025 Freelancer Bidding Platform. All rights reserved.</p>
+      </footer>
+
+    </div>
+  </div>
+
+  <!-- SIDEBAR TOGGLE SCRIPT -->
+  <script>
+    document.getElementById('menuToggle').addEventListener('click', function() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('show');
+    });
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', function(event) {
+      const sidebar = document.getElementById('sidebar');
+      const menuToggle = document.getElementById('menuToggle');
+      if (window.innerWidth <= 768 && 
+          !sidebar.contains(event.target) && 
+          !menuToggle.contains(event.target)) {
+        sidebar.classList.remove('show');
+      }
+    });
+
+    // File input preview
+    const fileInput = document.getElementById('assignmentFile');
+    if (fileInput) {
+      fileInput.addEventListener('change', function(e) {
+        const fileName = e.target.files[0]?.name || 'Choose File';
+        const wrapper = document.querySelector('.file-input-wrapper span');
+        wrapper.textContent = fileName;
+      });
+    }
+  </script>
+
+  <style>
+    .current-files {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .current-file-item {
+      background: rgba(26, 188, 156, 0.1);
+      border: 1px solid rgba(26, 188, 156, 0.3);
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .current-file-item i {
+      color: #e74c3c;
+      font-size: 1.1rem;
+    }
+  </style>
+
+</body>
+
+</html>
