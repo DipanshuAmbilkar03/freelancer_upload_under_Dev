@@ -160,6 +160,27 @@ body {
   padding: 28px;
 }
 
+.dashboard-alert {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 16px;
+  font-size: 0.88rem;
+}
+
+.alert-success {
+  background: rgba(0, 209, 178, 0.12);
+  color: #9df3e5;
+}
+
+.alert-error {
+  background: rgba(255, 89, 89, 0.13);
+  color: #ffc5c5;
+}
+
 .page-title-wrap h1 {
   margin: 0;
   font-size: 1.9rem;
@@ -348,6 +369,51 @@ body {
   margin-top: auto;
   display: flex;
   gap: 8px;
+}
+
+.upload-more-form {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.mini-upload-label {
+  cursor: pointer;
+  border: 1px dashed var(--border);
+  border-radius: 999px;
+  padding: 7px 11px;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  background: #151515;
+  width: 100%;
+  text-align: center;
+}
+
+.mini-upload-label:hover {
+  border-color: rgba(0, 209, 178, 0.35);
+  color: var(--accent);
+}
+
+.mini-upload-input {
+  display: none;
+}
+
+.mini-upload-submit {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #101010;
+  color: #fff;
+  font-size: 0.72rem;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: var(--trans);
+}
+
+.mini-upload-submit:hover {
+  background: #202020;
 }
 
 .btn {

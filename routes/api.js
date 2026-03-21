@@ -238,8 +238,8 @@ router.post('/pdfUpload', ensureAuthenticated, upload.single('image'), async (re
       assignment: assignment._id,
       uploadedBy: userId,
       file: {
-        filename: req.file.filename,
-        path: `/uploads/${req.file.filename}`,
+        filename: req.file.originalname,
+        path: req.file.filename,
         mimetype: req.file.mimetype
       }
     });

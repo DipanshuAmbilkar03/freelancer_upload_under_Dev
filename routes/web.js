@@ -201,8 +201,9 @@ router.post('/assignments/:id/bid', ensureAuthenticated, async (req, res) => {
 router.post('/upload-assignment', ensureAuthenticated, upload.single('assignmentFile'), async (req, res) => {
     try {
         const { title, description, subject, category, startingPrice, deadline } = req.body;
+        const parsedPrice = Number(startingPrice);
 
-        if (!title || !startingPrice) {
+        if (!title || !Number.isFinite(parsedPrice) || parsedPrice < 0) {
             return res.status(400).json({ error: 'Title and starting price are required' });
         }
 
@@ -211,7 +212,7 @@ router.post('/upload-assignment', ensureAuthenticated, upload.single('assignment
             description: description || '',
             subject: subject || '',
             category: category || '',
-            startingPrice: Number(startingPrice),
+            startingPrice: parsedPrice,
             deadline: deadline ? new Date(deadline) : null,
             status: 'open',
             postedBy: req.user._id
@@ -250,6 +251,72 @@ router.post('/upload-assignment', ensureAuthenticated, upload.single('assignment
         res.redirect('/dashboard');
     }
 });
+
+// ===== ADD MORE FILES TO EXISTING ASSIGNMENT =====
+const appendAssignmentFiles = async (req, res) => {
+    try {
+        const assignmentId = req.params.id;
+        const assignment = await Assignment.findById(assignmentId);
+
+        if (!assignment) {
+            req.session.message = {
+                type: 'error',
+                text: 'Assignment not found.'
+            };
+            return res.redirect('/dashboard');
+        }
+
+        if (assignment.postedBy.toString() !== req.user._id.toString()) {
+            req.session.message = {
+                type: 'error',
+                text: 'Not authorized to update this assignment.'
+            };
+            return res.redirect('/dashboard');
+        }
+
+        if (!req.files || req.files.length === 0) {
+            req.session.message = {
+                type: 'error',
+                text: 'Please choose at least one file to upload.'
+            };
+            return res.redirect('/dashboard');
+        }
+
+        for (const file of req.files) {
+            const pdf = new assignmentpdfs({
+                file: {
+                    filename: file.originalname,
+                    path: file.filename,
+                    mimetype: file.mimetype
+                },
+                uploadedBy: req.user._id,
+                assignment: assignmentId
+            });
+
+            await pdf.save();
+            assignment.pdfs.push(pdf._id);
+        }
+
+        await assignment.save();
+
+        req.session.message = {
+            type: 'success',
+            text: `${req.files.length} file(s) added successfully.`
+        };
+
+        return res.redirect('/dashboard');
+    } catch (err) {
+        console.error('Add files error:', err);
+        req.session.message = {
+            type: 'error',
+            text: 'Error adding files: ' + err.message
+        };
+        return res.redirect('/dashboard');
+    }
+};
+
+router.post('/assignments/:id/add-files', ensureAuthenticated, upload.array('assignmentFiles', 5), appendAssignmentFiles);
+router.post('/add-files/:id', ensureAuthenticated, upload.array('assignmentFiles', 5), appendAssignmentFiles);
 
 // ===== EDIT ASSIGNMENT - SHOW FORM =====
 router.get('/edit/:id', ensureAuthenticated, async (req, res) => {
@@ -313,7 +380,8 @@ router.post('/edit/:id', ensureAuthenticated, upload.single('assignmentFile'), a
                 for (const pdfId of assignment.pdfs) {
                     const oldPdf = await assignmentpdfs.findById(pdfId);
                     if (oldPdf && oldPdf.file && oldPdf.file.path) {
-                        const oldFilePath = path.join(uploadsDir, oldPdf.file.path);
+                        const normalizedPath = path.basename(oldPdf.file.path);
+                        const oldFilePath = path.join(uploadsDir, normalizedPath);
                         if (fs.existsSync(oldFilePath)) {
                             fs.unlinkSync(oldFilePath);
                         }
@@ -375,7 +443,8 @@ router.post('/delete/:id', ensureAuthenticated, async (req, res) => {
         if (assignment.pdfs && assignment.pdfs.length > 0) {
             for (const pdf of assignment.pdfs) {
                 if (pdf.file && pdf.file.path) {
-                    const filePath = path.join(uploadsDir, pdf.file.path);
+                    const normalizedPath = path.basename(pdf.file.path);
+                    const filePath = path.join(uploadsDir, normalizedPath);
                     if (fs.existsSync(filePath)) {
                         fs.unlinkSync(filePath);
                     }

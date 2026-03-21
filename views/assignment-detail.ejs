@@ -28,6 +28,13 @@
   <div class="page-wrapper">
     <div class="assignment-layout">
       <div class="card assignment-card">
+        <% const imageSrc = (typeof assignment.image === 'string')
+          ? assignment.image
+          : (assignment.image && assignment.image.path
+              ? (assignment.image.path.startsWith('/uploads/')
+                  ? assignment.image.path
+                  : '/uploads/' + assignment.image.path)
+              : 'https://via.placeholder.com/400x360'); %>
         <h2 class="card-title">
           <%= assignment.title %>
             <span class="status <%= assignment.status.toLowerCase() %>">
@@ -38,11 +45,7 @@
           <%= assignment.category || 'General' %> • <%= assignment.subject || 'N/A' %>
         </p>
 
-        <img class="card-img"
-          src="<%= (typeof assignment.image === 'string') 
-                ? assignment.image 
-                : (assignment.image && assignment.image.path ? assignment.image.path : 'https://via.placeholder.com/400x360') %>"
-          alt="assignment image">
+          <img class="card-img" src="<%= imageSrc %>" alt="assignment image">
 
         <div class="meta-grid">
           <div><strong>Budget</strong><span>₹<%= assignment.startingPrice %></span></div>
@@ -87,8 +90,9 @@
       <% if (assignment.pdfs && assignment.pdfs.length> 0) { %>
         <div class="pdf-grid">
           <% assignment.pdfs.forEach((pdf, index)=> { %>
-            <div class="pdf-thumb" onclick="openPdfModal('<%= pdf.file.path %>')">
-              <iframe src="<%= pdf.file.path %>" frameborder="0"></iframe>
+            <% const pdfUrl = pdf.file.path && pdf.file.path.startsWith('/uploads/') ? pdf.file.path : '/uploads/' + pdf.file.path; %>
+            <div class="pdf-thumb" onclick="openPdfModal('<%= pdfUrl %>')">
+              <iframe src="<%= pdfUrl %>" frameborder="0"></iframe>
               <p><strong>
                   <%= pdf.file.filename %>
                 </strong></p>

@@ -69,6 +69,13 @@
           <p>Available Assignments</p>
         </section>
 
+        <% if (message) { %>
+          <div class="dashboard-alert alert-<%= message.type === 'success' ? 'success' : 'error' %>">
+            <i class="fas fa-<%= message.type === 'success' ? 'check-circle' : 'triangle-exclamation' %>"></i>
+            <span><%= message.text %></span>
+          </div>
+        <% } %>
+
         <section class="assignments-section">
           <div class="section-header">
             <h2><i class="fas fa-folder-open"></i> Your Assignments (<%= assignments.length %>)</h2>
@@ -127,6 +134,22 @@
                     <button class="bookmark-btn" type="button" title="Save assignment">
                       <i class="far fa-bookmark"></i>
                     </button>
+
+                    <form action="/add-files/<%= a._id %>" method="POST" enctype="multipart/form-data" class="upload-more-form">
+                      <label for="assignmentFiles-<%= a._id %>" class="mini-upload-label" title="Upload more files">
+                        <i class="fas fa-paperclip"></i> Add Files
+                      </label>
+                      <input
+                        id="assignmentFiles-<%= a._id %>"
+                        type="file"
+                        name="assignmentFiles"
+                        class="mini-upload-input"
+                        multiple
+                        accept=".pdf,.doc,.docx,.txt,.jpg,.png,.jpeg"
+                      >
+                      <button type="submit" class="mini-upload-submit">Upload</button>
+                    </form>
+
                     <div class="card-actions">
                       <a href="/assignments/<%= a._id %>" class="btn btn-secondary btn-sm">
                       <i class="fas fa-eye"></i> View
@@ -181,6 +204,14 @@
         const icon = this.querySelector('i');
         icon.classList.toggle('far');
         icon.classList.toggle('fas');
+      });
+    });
+
+    document.querySelectorAll('.mini-upload-input').forEach(function(input) {
+      input.addEventListener('change', function() {
+        const label = this.closest('.upload-more-form').querySelector('.mini-upload-label');
+        const count = this.files ? this.files.length : 0;
+        label.innerHTML = count > 0 ? '<i class="fas fa-paperclip"></i> ' + count + ' file(s)' : '<i class="fas fa-paperclip"></i> Add Files';
       });
     });
   </script>

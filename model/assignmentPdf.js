@@ -12,9 +12,9 @@ const assignmentPdfSchema = new mongoose.Schema({
     required: true
   },
   file: {
-    filename: String,
-    path: String,
-    mimetype: String
+    filename: { type: String, required: true, trim: true },
+    path: { type: String, required: true, trim: true },
+    mimetype: { type: String, required: true, trim: true }
   }
 }, { timestamps: true });
 
